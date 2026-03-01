@@ -79,10 +79,10 @@ export class HomeComponent implements OnInit {
 
   }
 
-  budgetForm: FormGroup = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    budget: new FormControl(null, [Validators.required])
-  })
+  // budgetForm: FormGroup = new FormGroup({
+  //   name: new FormControl('', [Validators.required]),
+  //   budget: new FormControl(null, [Validators.required])
+  // })
 
   expenseForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -90,18 +90,18 @@ export class HomeComponent implements OnInit {
     budgetCategoryId: new FormControl(null, [Validators.required])
   })
 
-  addBudget() {
-    const budget: Budget = {
-      id: uuidv4(),
-      name: this.budgetForm.value.name,
-      budget: parseInt(this.budgetForm.value.budget),
-      spent: 0,
-      color: this.uiService.generateRandomColor(this.budgets.length + 1)
-    }
-    this.budgetService.addBudget(budget);
-    this.budgetForm.reset();
+  // addBudget() {
+  //   const budget: Budget = {
+  //     id: uuidv4(),
+  //     name: this.budgetForm.value.name,
+  //     budget: parseInt(this.budgetForm.value.budget),
+  //     spent: 0,
+  //     color: this.uiService.generateRandomColor(this.budgets.length + 1)
+  //   }
+  //   this.budgetService.addBudget(budget);
+  //   this.budgetForm.reset();
 
-  }
+  // }
 
   addExpense() {
     const category = this.budgetService.getBudgetCategoryById(this.expenseForm.value.budgetCategoryId)
