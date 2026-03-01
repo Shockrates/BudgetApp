@@ -1,1 +1,87 @@
-/* You can add global styles to this file, and also import other style files */
+@config "../tailwind.config.js";
+@import "tailwindcss";
+@source inline("{bg,text,border}-{red,blue,amber,green,purple,pink,indigo,teal,orange}-{100,200,300,400,500,600,700}");
+
+
+@theme {
+    --color-customHsl-warning: hsl(4 66% 63%);
+    --color-customHsl-bkg: hsl(190 60% 98%);
+    --color-customHsl-text: hsl(185 26% 9%);
+    --color-customHsl-muted: hsl(183 8% 55%);
+    --color-customHsl-accent: hsl(183 74% 44%);
+    --color-customHsl-warningopacity: hsl(4 66% 63% / 0.1);
+    --color-customHsl-blueopacity: hsl(183 74% 44% / 0.04);
+    --color-customHsl-accentopacity: hsl(183 74% 44% / 0.04);
+    --color-customHsl-amberopacity: hsl(26 90.5% 37.1% / 0.04);
+}
+
+@layer components {
+    .btn {
+        @apply flex gap-x-2 items-center rounded-md outline-none hover:no-underline py-2 px-4 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-70;
+    }
+
+    .btn-warning {
+        @apply border-solid border-customHsl-warning w-fit text-customHsl-warning bg-customHsl-warningopacity hover:bg-customHsl-warning hover:text-white transition duration-300 ease-in-out
+    }
+
+    .input-select {
+        @apply w-full border-customHsl-bkg border-2 py-2 px-4 rounded-[4px] text-[16px] border-solid border-customHsl-muted outline-none
+    }
+
+    .mini-title {
+        @apply text-5xl my-8 font-bold
+    }
+
+    /* button:disabled {
+        background-color: grey;
+        cursor: auto;
+    } */
+
+    .text-inputs {
+        @apply w-full
+    }
+
+    .input-form, .text-input-container {
+        @apply w-full
+    }
+
+    .table-data {
+        @apply w-1/5 text-center p-2 text-[15px] h-[52px] text-customHsl-text border-2 border-solid border-white;
+
+        .btn {
+            @apply m-auto;
+        }
+
+        .row-data {
+            @apply w-full;
+
+            &:nth-child(odd) {
+                @apply bg-customHsl-blueopacity;
+            }
+        }
+
+        .red-opacity {
+            &:nth-child(odd) {
+                @apply bg-customHsl-accentopacity;
+            }
+        }
+
+        .blue-opacity {
+            &:nth-child(odd) {
+                @apply bg-customHsl-blueopacity;
+            }
+        }
+
+        .amber-opacity {
+            &:nth-child(odd) {
+                @apply bg-customHsl-amberopacity;
+            }
+        }
+
+        th {
+            @apply text-2xl;
+        }
+    }
+
+
+}
