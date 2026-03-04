@@ -14,7 +14,8 @@ export class UserService {
   addUser(name: string) {
     const user: User = {
       id: uuidv4(),
-      name: name
+      name: name,
+      email: ""
     }
     localStorage.setItem(this.USER, JSON.stringify(user));
 
