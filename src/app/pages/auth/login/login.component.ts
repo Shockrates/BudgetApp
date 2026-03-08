@@ -24,26 +24,20 @@ export class LoginComponent {
 
 
   handleLogin() {
-
-    //this.userService.addUser(this.accountForm.value.name);
-    //this.router.navigateByUrl('');
-    console.log(this.loginForm.value);
+    console.log("From Login: ", this.loginForm.value);
     const loginData = this.mapFormToLogin();
 
 
     this.authService.login(loginData).subscribe({
       next: data => {
-
-        console.log(data);
+        //console.log(this.authService.getDecodedToken().sub);
         // this.isLoginFailed = false;
         // this.isLoggedIn = true;
         // this.router.navigate(['/expenses']);
+        this.router.navigateByUrl('');
       },
       error: err => {
         console.error(err.status, " ", err.error.message);
-
-        // this.errorMessage = err.error.message;
-        // this.isLoginFailed = true;
       }
     });
 

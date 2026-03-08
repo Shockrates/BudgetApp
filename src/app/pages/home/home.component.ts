@@ -15,6 +15,8 @@ import { Expense } from '../../interfaces/models/expense.interface';
 import { ExpenseTableDataConfig } from '../../interfaces/ui-config/expense-table-config.interface';
 import { ExpenseTableComponent } from '../../components/expense-table/expense-table.component';
 import { BudgetFormComponent } from '../../components/budget-form/budget-form.component';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../interfaces/models/user.interface';
 
 @Component({
   selector: 'app-home',
@@ -28,17 +30,19 @@ export class HomeComponent implements OnInit {
   private userService = inject(UserService);
   private budgetService = inject(BudgetService);
   private expenseService = inject(ExpenseService);
+  private authService = inject(AuthService);
   private uiService = inject(UiService);
   private router = inject(Router);
 
-  user: string = '';
+  user!: User | null;
   budgetCategories: BudgetCategory[] = [];
   budgets: Budget[] = [];
   budgetCards: BudgetCardConfig[] = [];
   expenseTableData: ExpenseTableDataConfig[] = [];
 
   ngOnInit(): void {
-    this.user = this.userService.getUser().name || 'Guest';
+    //this.user = this.userService.getUser().name || 'Guest';
+    this.user = this.authService.getCurrentUser();
     this.budgetCategories = this.budgetService.getBudgetCategories();
     this.budgets = this.budgetService.getBudgets();
     this.buildBudgetCards(this.budgets);

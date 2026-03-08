@@ -3,9 +3,16 @@
         <img src="home-icon-silhouette-svgrepo-com.svg" class="w-6 h-6">
         <p class="text-2xl font-bold">Home</p>
     </div>
+    @if (user$ | async; as user ) {
+    <div class="
+    ">{{user.name}}</div>
+    }
 
-    @if (userService.isLoggedIn()) {
-    <button class="btn btn-warning" (click)="deleteUserAccount()">
+
+
+
+    @if (authService.isAuthenticated()) {
+    <button class="btn btn-warning" (click)="handleLogout()">
         Delete User
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20">
             <path fill-rule="evenodd"

@@ -4,6 +4,7 @@ import { BudgetDetailsComponent } from './pages/budget-details/budget-details.co
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
 import { authGuard } from './guards/auth.guard';
 import { LoginComponent } from './pages/auth/login/login.component';
+import { RegisterComponent } from './pages/auth/register/register.component';
 
 export const routes: Routes = [
     {
@@ -29,5 +30,9 @@ export const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent
+    },
+    {
+        path: 'register',
+        component: RegisterComponent
     }
 ];
