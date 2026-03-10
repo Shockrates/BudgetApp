@@ -5,6 +5,7 @@ import { User } from '../interfaces/models/user.interface';
 import { LoginCredentials } from '../interfaces/api/LoginCredentials.interface';
 import { LoginResponse } from '../interfaces/api/LoginResponse.Interface';
 import { jwtDecode } from "jwt-decode";
+import { RegisterCredentials } from '../interfaces/api/register-credentials';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,17 @@ export class AuthService {
       });
   }
 
+  register(user:RegisterCredentials){
+    return this.http.post<any>(this.REGISTER_URL, user).pipe(
+       tap((response) => {
+
+          console.log("FROM register service", response.data);
+          
+
+        })
+      
+    )
+  }
 
   login(user: LoginCredentials): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.LOGIN_URL, user)
