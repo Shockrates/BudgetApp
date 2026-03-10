@@ -4,6 +4,8 @@ import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { RegisterCredentials } from '../../../interfaces/api/register-credentials';
+import { AuthSuccessComponent } from '../../../components/authsuccess/authsuccess.component';
+import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-config';
 
 @Component({
   selector: 'app-register',
@@ -24,33 +26,37 @@ export class RegisterComponent {
   });
 
   handleRegister() {
-       console.log("From Register Form: ", this.registerForm.value);
+    console.log("From Register Form: ", this.registerForm.value);
     const registerdData = this.mapFormToRegister();
 
 
     this.authService.register(registerdData).subscribe({
       next: data => {
-        //console.log(this.authService.getDecodedToken().sub);
+        console.log(data.message);
         // this.isLoginFailed = false;
         // this.isLoggedIn = true;
         // this.router.navigate(['/expenses']);
-        //this.router.navigateByUrl('');
+        const successConfig: AuthSuccessConfig = {
+          message: 'Account created successfully',
+          redirectUrl: '/login'
+        }
+        this.router.navigate(['/auth-success', successConfig]);
       },
       error: err => {
-        console.error(err.status, " ", err.error.message);
+        console.error(err.error.message);
       }
     });
   }
 
-    private mapFormToRegister(): RegisterCredentials {
-      const { name,email, password } = this.registerForm.value;
-      return {
-        userName: name ?? '',
-        userEmail: email ?? '',
-        userPassword: password ?? ''
-      };
-    }
+  private mapFormToRegister(): RegisterCredentials {
+    const { name, email, password } = this.registerForm.value;
+    return {
+      userName: name ?? '',
+      userEmail: email ?? '',
+      userPassword: password ?? ''
+    };
+  }
 
-  
+
 
 }
