@@ -5,7 +5,7 @@ import { CreateAccountComponent } from './pages/create-account/create-account.co
 import { authGuard } from './guards/auth.guard';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
-import { AuthSuccessComponent } from './components/authsuccess/authsuccess.component';
+import { AuthSuccessComponent } from './pages/auth/authsuccess/authsuccess.component';
 
 export const routes: Routes = [
     {

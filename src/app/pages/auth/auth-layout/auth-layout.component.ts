@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AuthLayoutStateService } from '../../../services/state/auth-layout-state.service';
 
 @Component({
   selector: 'app-auth-layout',
@@ -7,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrl: './auth-layout.component.css'
 })
 export class AuthLayoutComponent {
+
+
+  public layoutState = inject(AuthLayoutStateService);
+
+
+
 
 }

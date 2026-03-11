@@ -4,7 +4,7 @@ import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { RegisterCredentials } from '../../../interfaces/api/register-credentials';
-import { AuthSuccessComponent } from '../../../components/authsuccess/authsuccess.component';
+import { AuthSuccessComponent } from '../authsuccess/authsuccess.component';
 import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-config';
 
 @Component({

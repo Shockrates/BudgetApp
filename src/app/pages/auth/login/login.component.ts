@@ -6,6 +6,7 @@ import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/api/LoginCredentials.interface';
 import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-config';
+import { AuthLayoutStateService } from '../../../services/state/auth-layout-state.service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-co
 })
 export class LoginComponent {
   private authService = inject(AuthService);
+  private layoutState = inject(AuthLayoutStateService);
   private router = inject(Router);
 
 
@@ -28,23 +30,24 @@ export class LoginComponent {
     console.log("From Login: ", this.loginForm.value);
     const loginData = this.mapFormToLogin();
 
+    this.layoutState.setSuccess();
 
-    this.authService.login(loginData).subscribe({
-      next: data => {
-        //console.log(this.authService.getDecodedToken().sub);
-        // this.isLoginFailed = false;
-        // this.isLoggedIn = true;
-        const successConfig: AuthSuccessConfig = {
-                  message: 'Account created successfully',
-                  redirectUrl: ''
-                }
-                this.router.navigate(['/auth-success', successConfig]);
-        //this.router.navigateByUrl('');
-      },
-      error: err => {
-        console.error(err.status, " ", err.error.message);
-      }
-    });
+
+    // this.authService.login(loginData).subscribe({
+    //   next: data => {
+    //     // this.isLoginFailed = false;
+    //     // this.isLoggedIn = true;
+    //     const successConfig: AuthSuccessConfig = {
+    //       message: 'Account created successfully',
+    //       redirectUrl: ''
+    //     }
+    //     this.router.navigate(['/auth-success', successConfig]);
+    //     //this.router.navigateByUrl('');
+    //   },
+    //   error: err => {
+    //     console.error(err.status, " ", err.error.message);
+    //   }
+    // });
 
 
   }
