@@ -4,8 +4,10 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../interfaces/models/user.interface';
 import { LoginCredentials } from '../interfaces/api/LoginCredentials.interface';
 import { LoginResponse } from '../interfaces/api/LoginResponse.Interface';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { RegisterCredentials } from '../interfaces/api/register-credentials';
+import { AppJwtPayload } from '../interfaces/api/jwt-payload';
+import { JwtService } from './jwt.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,7 @@ export class AuthService {
 
   private readonly LOGIN_URL = 'api/auth/login';
   private readonly REGISTER_URL = 'api/auth/register'
-  private readonly JWT_TOKEN = "JWT_TOKEN";
+
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
 
@@ -23,25 +25,26 @@ export class AuthService {
 
 
   private http = inject(HttpClient);
+  private jwtService = inject(JwtService);
 
   constructor() {
     this.loadStoredUser()
   }
 
   loadStoredUser() {
-    const jwtToken = this.getToken();
+    const jwtToken = this.jwtService.getToken();
 
-    if (!jwtToken) {
+    if (!this.isAuthenticated()) {
       return;
     }
-
+  
     this.http.get<LoginResponse>('/api/auth/me')
       .subscribe(resp => {
 
         const user: User = {
           id: resp.data.id,
           name: resp.data.userName,
-          email: this.getDecodedToken().sub
+          email: resp.data.userEmail
         }
 
 
@@ -85,24 +88,8 @@ export class AuthService {
     }
     this.loggedUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
-    this.storeJwtToken(response.data.token);
+    this.jwtService.storeJwtToken(response.data.token);
 
-  }
-
-  private storeJwtToken(jwt: string): void {
-    localStorage.setItem(this.JWT_TOKEN, jwt);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem(this.JWT_TOKEN);
-  }
-
-  getDecodedToken(): any {
-    const token = this.getToken();
-    if (token) {
-      return jwtDecode(token);
-    }
-    return null;
   }
 
   getCurrentUser(): User | null {
@@ -110,19 +97,9 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    const token = this.getToken();
-    return !!token;
-  }
-
-  isTokenExpired(): boolean {
-    const decodedToken = this.getDecodedToken();
-    if (decodedToken == null || !decodedToken.exp) {
-      return true;
-    }
-    const expirationDate = decodedToken.exp * 1000
-    const now = new Date().getTime();
-
-    return expirationDate < now
+    const token = this.jwtService.getToken();
+    const isExpired = this.jwtService.isTokenExpired()
+    return !!token && !isExpired;
   }
 
   logout(): void {

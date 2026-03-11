@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./components/navbar/navbar.component";
 
 @Component({
@@ -10,4 +10,14 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
 })
 export class AppComponent {
   title = 'BudgetApp';
+
+  //TO DO: BETTER IMPLEMENT HIDE NAVV BAR ON SUCCESS PAGE
+  hideNavbar = false;
+  router = inject(Router)
+
+  ngOnInit() {
+  this.router.events.subscribe(() => {
+    this.hideNavbar = this.router.url.includes('/auth-success');
+  });
+}
 }

@@ -47,6 +47,8 @@ export class HomeComponent implements OnInit {
     this.budgets = this.budgetService.getBudgets();
     this.buildBudgetCards(this.budgets);
     console.log('Budget Categories Loading:', this.budgets);
+    //.log('TOKEN:: '+this.authService.getDecodedToken()?.sub);
+    
 
     this.budgetService.getBudgetCategoryData().subscribe({
       next: (res: BudgetCategory[]) => {

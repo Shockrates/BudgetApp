@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { LoginCredentials } from '../../../interfaces/api/LoginCredentials.interface';
+import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-config';
 
 @Component({
   selector: 'app-login',
@@ -33,8 +34,12 @@ export class LoginComponent {
         //console.log(this.authService.getDecodedToken().sub);
         // this.isLoginFailed = false;
         // this.isLoggedIn = true;
-        // this.router.navigate(['/expenses']);
-        this.router.navigateByUrl('');
+        const successConfig: AuthSuccessConfig = {
+                  message: 'Account created successfully',
+                  redirectUrl: ''
+                }
+                this.router.navigate(['/auth-success', successConfig]);
+        //this.router.navigateByUrl('');
       },
       error: err => {
         console.error(err.status, " ", err.error.message);
