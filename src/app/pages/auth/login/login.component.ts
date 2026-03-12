@@ -30,24 +30,26 @@ export class LoginComponent {
     console.log("From Login: ", this.loginForm.value);
     const loginData = this.mapFormToLogin();
 
-    this.layoutState.setSuccess();
+    //this.layoutState.setSuccess();
 
 
-    // this.authService.login(loginData).subscribe({
-    //   next: data => {
-    //     // this.isLoginFailed = false;
-    //     // this.isLoggedIn = true;
-    //     const successConfig: AuthSuccessConfig = {
-    //       message: 'Account created successfully',
-    //       redirectUrl: ''
-    //     }
-    //     this.router.navigate(['/auth-success', successConfig]);
-    //     //this.router.navigateByUrl('');
-    //   },
-    //   error: err => {
-    //     console.error(err.status, " ", err.error.message);
-    //   }
-    // });
+    this.authService.login(loginData).subscribe({
+      next: data => {
+        // this.isLoginFailed = false;
+        // this.isLoggedIn = true;
+        const successConfig: AuthSuccessConfig = {
+          message: 'Login successfully',
+          redirectUrl: '',
+          status:'success'
+        }
+        this.layoutState.setSuccess(successConfig);
+        //this.router.navigate(['/auth-success', successConfig]);
+        //this.router.navigateByUrl('');
+      },
+      error: err => {
+        console.error(err.status, " ", err.error.message);
+      }
+    });
 
 
   }

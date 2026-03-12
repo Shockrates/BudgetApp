@@ -1,20 +1,24 @@
 import { Injectable, signal } from '@angular/core';
-import { AuthSuccessConfig } from '../../interfaces/ui-config/auth-success-config';
+import { authStatus, AuthSuccessConfig } from '../../interfaces/ui-config/auth-success-config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthLayoutStateService {
 
-  config = signal<string>('default');
+  config = signal<AuthSuccessConfig>({message:"", redirectUrl: '', status:'default'});
 
   constructor() { }
 
-  setSuccess() {
-    this.config.set('success');
+  setSuccess(successConfig: AuthSuccessConfig) {
+    this.config.set({  ...successConfig });
+    //this.config.update(x => ({ ...x, firstName: 'Danny' }))
   }
 
   reset() {
-    this.config.set('default');
+    this.config.set({message:"", redirectUrl: '', status:'default'});
   }
+
+
 }
+

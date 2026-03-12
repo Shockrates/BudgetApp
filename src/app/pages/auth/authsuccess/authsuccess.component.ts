@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { timer } from 'rxjs';
+import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-config';
 
 @Component({
   selector: 'app-authsuccess',
@@ -10,12 +11,12 @@ import { timer } from 'rxjs';
 })
 export class AuthSuccessComponent implements OnInit {
 
-  router = inject(Router);
+   @Input() config!: AuthSuccessConfig;
 
-  ngOnInit(): void {
-    timer(3000).subscribe(() => {
-      this.router.navigateByUrl('/login');
-    });
+   public successMessage:string  = "";
+
+   ngOnInit(): void {
+    this.successMessage = this.config.message;
   }
 
 }

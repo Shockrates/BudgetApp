@@ -4,8 +4,8 @@ import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { RegisterCredentials } from '../../../interfaces/api/register-credentials';
-import { AuthSuccessComponent } from '../authsuccess/authsuccess.component';
 import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-config';
+import { AuthLayoutStateService } from '../../../services/state/auth-layout-state.service';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +16,7 @@ import { AuthSuccessConfig } from '../../../interfaces/ui-config/auth-success-co
 export class RegisterComponent {
 
   private authService = inject(AuthService);
+  private layoutState = inject(AuthLayoutStateService);
   private router = inject(Router);
 
 
@@ -38,9 +39,10 @@ export class RegisterComponent {
         // this.router.navigate(['/expenses']);
         const successConfig: AuthSuccessConfig = {
           message: 'Account created successfully',
-          redirectUrl: '/login'
+          redirectUrl: '/login',
+          status:"success"
         }
-        this.router.navigate(['/auth-success', successConfig]);
+        this.layoutState.setSuccess(successConfig);
       },
       error: err => {
         console.error(err.error.message);

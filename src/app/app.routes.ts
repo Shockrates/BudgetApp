@@ -36,8 +36,5 @@ export const routes: Routes = [
         path: 'register',
         component: RegisterComponent
     },
-    {
-        path: 'auth-success',
-        component: AuthSuccessComponent
-    }
+ 
 ];
