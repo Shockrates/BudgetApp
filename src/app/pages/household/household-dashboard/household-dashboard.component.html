@@ -1,4 +1,12 @@
 <app-household-layout>
     <p>household-dashboard works!</p>
+    <br>
+    @if (households && households.length > 0) {
+    <h2 class="mini-title">Existing Budgets</h2>
+    <div class="flex w-full flex-wrap gap-4">
+        @for (household of households; track $index){
+        <p>{{household.name}}</p>
+        }
+    </div>
+    }
 </app-household-layout>
-

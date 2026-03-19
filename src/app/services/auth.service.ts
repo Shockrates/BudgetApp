@@ -38,51 +38,52 @@ export class AuthService {
     if (!this.isAuthenticated()) {
       return;
     }
-  
-    this.http.get<LoginResponse>('/api/auth/me').pipe(
-        catchError(error => {
-        
-          console.error('Error fetching user data:', error);
 
-          // Handle specific error cases
-          if (error.status === 401) {
-            console.warn('Unauthorized access - token may be invalid.');
-          } else {
-            console.warn('Failed to load user data. Please try again later.');
-          }
-          return of(null);
-        })
-      )
+    this.http.get<LoginResponse>('/api/auth/me').pipe(
+      catchError(error => {
+
+        console.error('Error fetching user data:', error);
+
+        // Handle specific error cases
+        if (error.status === 401) {
+          console.warn('Unauthorized access - token may be invalid.');
+        } else {
+          console.warn('Failed to load user data. Please try again later.');
+        }
+        return of(null);
+      })
+    )
       .subscribe(resp => {
         console.log(resp);
-        
+
         if (resp) {
           console.log(resp);
-        
-        const user: User = {
-          id: resp.data.id,
-          name: resp.data.userName,
-          email: resp.data.userEmail
+
+          const user: User = {
+            id: resp.data.id,
+            name: resp.data.userName,
+            email: resp.data.userEmail
+          }
+          this.loggedUserSubject.next(user);
         }
-        this.loggedUserSubject.next(user);
-        }
-        
+
       });
   }
 
-  register(user:RegisterCredentials){
+  register(user: RegisterCredentials) {
     return this.http.post<any>(this.REGISTER_URL, user).pipe(
-       tap((response) => {
+      tap((response) => {
 
-          console.log("FROM register service", response.data);
-          
+        console.log("FROM register service", response.data);
 
-        })
-      
+
+      })
+
     )
   }
 
-  login(user: LoginCredentials): Observable<LoginResponse> {
+  //login(user: LoginCredentials): Observable<LoginResponse> {
+  login(user: LoginCredentials) {
     return this.http.post<LoginResponse>(this.LOGIN_URL, user)
       .pipe(
         tap((response: LoginResponse) => {
