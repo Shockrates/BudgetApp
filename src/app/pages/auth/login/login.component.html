@@ -12,6 +12,9 @@
                     clip-rule="evenodd"></path>
             </svg>
         </button>
+        @if (error) {
+            <span class="text-sm text-red-600">{{errorMessage}}</span>
+        }
         <a class="text-lg" [routerLink]="['/register']">No Account? Please <span
                 class="text-customHsl-accent">create</span> a new one</a>
 

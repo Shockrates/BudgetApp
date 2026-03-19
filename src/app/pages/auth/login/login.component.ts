@@ -18,6 +18,8 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private layoutState = inject(AuthLayoutStateService);
   private router = inject(Router);
+  public error = false;
+  public errorMessage:string = "Login failed" 
 
 
   loginForm: FormGroup = new FormGroup({
@@ -27,7 +29,6 @@ export class LoginComponent {
 
 
   handleLogin() {
-    console.log("From Login: ", this.loginForm.value);
     const loginData = this.mapFormToLogin();
 
     //this.layoutState.setSuccess();
@@ -48,6 +49,10 @@ export class LoginComponent {
       },
       error: err => {
         console.error(err.status, " ", err.error.message);
+        this.error = true;
+        if (err.status === 401) {
+          this.errorMessage ="There is an issue with your credentials"
+        }
       }
     });
 

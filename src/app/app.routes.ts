@@ -6,6 +6,8 @@ import { authGuard } from './guards/auth.guard';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { AuthSuccessComponent } from './pages/auth/authsuccess/authsuccess.component';
+import { HouseholdDashboardComponent } from './pages/household/household-dashboard/household-dashboard.component';
+import { HouseholdCreationComponent } from './pages/household/household-creation/household-creation.component';
 
 export const routes: Routes = [
     {
@@ -36,5 +38,20 @@ export const routes: Routes = [
         path: 'register',
         component: RegisterComponent
     },
+    {
+        path:'household',
+        children:[
+            {
+                path:'dashboard',
+                component:HouseholdDashboardComponent
+            },
+            {
+                path:'create',
+                component:HouseholdCreationComponent
+            },
+
+        ],
+        canActivate:[authGuard]
+    }
  
 ];

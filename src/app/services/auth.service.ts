@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { User } from '../interfaces/models/user.interface';
 import { LoginCredentials } from '../interfaces/api/LoginCredentials.interface';
 import { LoginResponse } from '../interfaces/api/LoginResponse.Interface';
-import { jwtDecode, JwtPayload } from "jwt-decode";
 import { RegisterCredentials } from '../interfaces/api/register-credentials';
-import { AppJwtPayload } from '../interfaces/api/jwt-payload';
 import { JwtService } from './jwt.service';
+import { catchError, switchMap } from 'rxjs/operators';
+import { HouseholdService } from './household.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,7 @@ export class AuthService {
 
   private http = inject(HttpClient);
   private jwtService = inject(JwtService);
+  private householdService = inject(HouseholdService);
 
   constructor() {
     this.loadStoredUser()
@@ -38,17 +39,34 @@ export class AuthService {
       return;
     }
   
-    this.http.get<LoginResponse>('/api/auth/me')
-      .subscribe(resp => {
+    this.http.get<LoginResponse>('/api/auth/me').pipe(
+        catchError(error => {
+        
+          console.error('Error fetching user data:', error);
 
+          // Handle specific error cases
+          if (error.status === 401) {
+            console.warn('Unauthorized access - token may be invalid.');
+          } else {
+            console.warn('Failed to load user data. Please try again later.');
+          }
+          return of(null);
+        })
+      )
+      .subscribe(resp => {
+        console.log(resp);
+        
+        if (resp) {
+          console.log(resp);
+        
         const user: User = {
           id: resp.data.id,
           name: resp.data.userName,
           email: resp.data.userEmail
         }
-
-
         this.loggedUserSubject.next(user);
+        }
+        
       });
   }
 
@@ -68,13 +86,11 @@ export class AuthService {
     return this.http.post<LoginResponse>(this.LOGIN_URL, user)
       .pipe(
         tap((response: LoginResponse) => {
-
-          console.log("FROM login ", response.data);
           if (response && response.data) {
             this.doLoginUser(response)
           }
-
-        })
+        }),
+        switchMap(() => this.householdService.loadLoggedUserHouseholds())
       )
   }
 
