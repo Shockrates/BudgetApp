@@ -2,10 +2,10 @@
     <p>household-dashboard works!</p>
     <br>
     @if (households && households.length > 0) {
-    <h2 class="mini-title">Existing Budgets</h2>
-    <div class="flex w-full flex-wrap gap-4">
+    <h2 class="mini-title">Choose a household to work on </h2>
+    <div class="flex flex-col w-full flex-wrap gap-4">
         @for (household of households; track $index){
-        <p>{{household.name}}</p>
+            <app-household-table-card [household]="household"></app-household-table-card>
         }
     </div>
     }

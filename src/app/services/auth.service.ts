@@ -54,11 +54,8 @@ export class AuthService {
       })
     )
       .subscribe(resp => {
-        console.log(resp);
 
         if (resp) {
-          console.log(resp);
-
           const user: User = {
             id: resp.data.id,
             name: resp.data.userName,

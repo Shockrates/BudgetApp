@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, map, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, of, tap } from 'rxjs';
 import { Household } from '../interfaces/models/household.interface';
 import { UserHouseholdResponse } from '../interfaces/api/UserHouseholdResponse';
 
@@ -20,7 +20,9 @@ export class HouseholdService {
   private activeHouseholdSubject = new BehaviorSubject<Household | null>(null);
   activeHouseholds$ = this.activeHouseholdSubject.asObservable();
 
-  constructor() { }
+  constructor() {
+    this.loadLoggedUserHouseholds().subscribe();
+   }
 
   loadLoggedUserHouseholds() {
     return this.http.get<UserHouseholdResponse>('api/users/me/households').pipe(
@@ -31,7 +33,11 @@ export class HouseholdService {
         console.log(this.householdsSubject.value);
 
 
-      })
+      }),
+      catchError(err => {
+      console.error('Failed to load households', err);
+      return of([]); // fallback to empty array
+    })
     )
   }
 

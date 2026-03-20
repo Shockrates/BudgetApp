@@ -3,4 +3,5 @@ export interface Household {
     name: string;
      creatorId: string;
     creatorname: string;
+    membersCount: number
 }

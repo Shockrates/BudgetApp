@@ -27,7 +27,7 @@ export class AuthLayoutComponent {
       setTimeout(() => {
         this.router.navigateByUrl(authConfig.redirectUrl);
         this.layoutState.reset();
-      }, 3000);
+      }, 2000);
     }
   });
 
