@@ -21,8 +21,8 @@ export class HouseholdService {
   activeHouseholds$ = this.activeHouseholdSubject.asObservable();
 
   constructor() {
-    this.loadLoggedUserHouseholds().subscribe();
-   }
+    //this.loadLoggedUserHouseholds().subscribe();
+  }
 
   loadLoggedUserHouseholds() {
     return this.http.get<UserHouseholdResponse>('api/users/me/households').pipe(
@@ -35,9 +35,9 @@ export class HouseholdService {
 
       }),
       catchError(err => {
-      console.error('Failed to load households', err);
-      return of([]); // fallback to empty array
-    })
+        console.error('Failed to load households', err);
+        return of([]); // fallback to empty array
+      })
     )
   }
 
@@ -74,6 +74,10 @@ export class HouseholdService {
 
   getActiveHousehold(): Household | null {
     return this.activeHouseholdSubject.getValue();
+  }
+
+  setHouseholdSubject(households: Household[]) {
+    this.householdsSubject.next(households);
   }
 
   clearActiveHousehold() {

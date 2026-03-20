@@ -8,6 +8,7 @@ import { RegisterCredentials } from '../interfaces/api/register-credentials';
 import { JwtService } from './jwt.service';
 import { catchError, switchMap } from 'rxjs/operators';
 import { HouseholdService } from './household.service';
+import { UserHouseholdResponse } from '../interfaces/api/UserHouseholdResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,7 @@ export class AuthService {
       return;
     }
 
-    this.http.get<LoginResponse>('/api/auth/me').pipe(
+    this.http.get<UserHouseholdResponse>('/api/users/me/households').pipe(
       catchError(error => {
 
         console.error('Error fetching user data:', error);
@@ -57,11 +58,12 @@ export class AuthService {
 
         if (resp) {
           const user: User = {
-            id: resp.data.id,
-            name: resp.data.userName,
-            email: resp.data.userEmail
+            id: resp.data.user.userId.toString(),
+            name: resp.data.user.userName,
+            email: resp.data.user.userEmail
           }
           this.loggedUserSubject.next(user);
+          this.householdService.setHouseholdSubject(resp.data.userHouseholds);
         }
 
       });

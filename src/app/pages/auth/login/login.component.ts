@@ -19,7 +19,7 @@ export class LoginComponent {
   private layoutState = inject(AuthLayoutStateService);
   private router = inject(Router);
   public error = false;
-  public errorMessage:string = "Login failed" 
+  public errorMessage: string = "Login failed"
 
 
   loginForm: FormGroup = new FormGroup({
@@ -31,7 +31,7 @@ export class LoginComponent {
   handleLogin() {
     const loginData = this.mapFormToLogin();
 
-    //this.layoutState.setSuccess();
+    this.layoutState.setLoading();
 
 
     this.authService.login(loginData).subscribe({
@@ -41,7 +41,7 @@ export class LoginComponent {
         const successConfig: AuthSuccessConfig = {
           message: 'Login successfully',
           redirectUrl: '',
-          status:'success'
+          status: 'success'
         }
         this.layoutState.setSuccess(successConfig);
         //this.router.navigate(['/auth-success', successConfig]);
@@ -51,7 +51,7 @@ export class LoginComponent {
         console.error(err.status, " ", err.error.message);
         this.error = true;
         if (err.status === 401) {
-          this.errorMessage ="There is an issue with your credentials"
+          this.errorMessage = "There is an issue with your credentials"
         }
       }
     });

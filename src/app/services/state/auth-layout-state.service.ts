@@ -6,17 +6,25 @@ import { authStatus, AuthSuccessConfig } from '../../interfaces/ui-config/auth-s
 })
 export class AuthLayoutStateService {
 
-  config = signal<AuthSuccessConfig>({message:"", redirectUrl: '', status:'default'});
+  config = signal<AuthSuccessConfig>({ message: "", redirectUrl: '', status: 'default' });
 
   constructor() { }
 
   setSuccess(successConfig: AuthSuccessConfig) {
-    this.config.set({  ...successConfig });
+    this.config.set({ ...successConfig });
     //this.config.update(x => ({ ...x, firstName: 'Danny' }))
   }
 
+  setLoading() {
+    this.config.set({
+      message: '',
+      redirectUrl: '',
+      status: 'loading'
+    });
+  }
+
   reset() {
-    this.config.set({message:"", redirectUrl: '', status:'default'});
+    this.config.set({ message: "", redirectUrl: '', status: 'default' });
   }
 
 
