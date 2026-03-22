@@ -31,7 +31,7 @@ export class LoginComponent {
   handleLogin() {
     const loginData = this.mapFormToLogin();
 
-    this.layoutState.setLoading();
+    //this.layoutState.setLoading();
 
 
     this.authService.login(loginData).subscribe({
