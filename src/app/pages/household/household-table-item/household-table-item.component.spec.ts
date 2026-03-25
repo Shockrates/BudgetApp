@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HouseholdTableCardComponent } from './household-table-card.component';
+import { HouseholdTableCardComponent } from './household-table-item.component';
 
 describe('HouseholdTableCardComponent', () => {
   let component: HouseholdTableCardComponent;
@@ -10,7 +10,7 @@ describe('HouseholdTableCardComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HouseholdTableCardComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(HouseholdTableCardComponent);
     component = fixture.componentInstance;
