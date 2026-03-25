@@ -13,8 +13,9 @@ import { HouseholdItemConfig } from '../../../interfaces/ui-config/household-ite
 export class HouseholdTableCardComponent {
 
   @Input() household!: HouseholdItemConfig;
+  @Input() isSelected = false;
 
-  isSelected = output();
+  selected = output();
 
   ngOnInit(): void {
     if (!this.household) {
@@ -23,6 +24,6 @@ export class HouseholdTableCardComponent {
   }
 
   handleOnSelect(): void {
-    this.isSelected.emit();
+    this.selected.emit();
   }
 }

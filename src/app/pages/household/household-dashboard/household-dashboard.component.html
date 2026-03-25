@@ -5,7 +5,8 @@
     <h2 class="mini-title">Choose a household to work on </h2>
     <div class="flex flex-col w-full flex-wrap gap-4">
         @for (householdItem of householdItems; track $index){
-        <app-household-table-item [household]="householdItem"></app-household-table-item>
+        <app-household-table-item [household]="householdItem" [isSelected]="selectedHouseholdId()===householdItem.id"
+            (selected)="onSelectItem(householdItem.id)"></app-household-table-item>
         }
     </div>
     }

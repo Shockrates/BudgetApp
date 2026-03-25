@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { HouseholdLayoutComponent } from "../household-layout/household-layout.component";
 import { HouseholdService } from '../../../services/household.service';
 import { Household } from '../../../interfaces/models/household.interface';
@@ -19,6 +19,7 @@ export class HouseholdDashboardComponent implements OnInit {
 
   households: Household[] = [];
   householdItems: HouseholdItemConfig[] = [];
+  selectedHouseholdId = signal<String | null>(null);
 
 
   ngOnInit(): void {
@@ -36,14 +37,19 @@ export class HouseholdDashboardComponent implements OnInit {
 
   }
 
+  onSelectItem(id: String) {
+    this.selectedHouseholdId.set(id);
+  }
+
   buildHouseholdItems(households: Household[]) {
     this.householdItems = households.map((item: Household) => {
       return {
         id: item.id,
         name: item.name,
         membersCount: item.membersCount,
-        isSelected: false
       }
     })
   }
+
+
 }
