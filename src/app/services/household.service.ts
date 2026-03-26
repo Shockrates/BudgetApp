@@ -10,7 +10,7 @@ import { UserHouseholdResponse } from '../interfaces/api/UserHouseholdResponse';
 export class HouseholdService {
 
   private readonly HOUSEHOLD_URL = 'api/household';
-  private readonly ACTIVE_HOUSEHOLD_KEY = 'ACTIVE_HOUSEHOLD_ID';
+  private readonly ACTIVE_HOUSEHOLD_KEY = 'ACTIVE_HOUSEHOLD';
 
   http = inject(HttpClient);
 
@@ -21,7 +21,9 @@ export class HouseholdService {
   activeHouseholds$ = this.activeHouseholdSubject.asObservable();
 
   constructor() {
-    //this.loadLoggedUserHouseholds().subscribe();
+
+
+    //this.restoreActiveHousehold(this.householdsSubject.getValue());
   }
 
   loadLoggedUserHouseholds() {
@@ -44,14 +46,17 @@ export class HouseholdService {
   private restoreActiveHousehold(households: Household[]) {
 
     const storedHousehold = localStorage.getItem(this.ACTIVE_HOUSEHOLD_KEY);
+    // console.log("From restoreActiveHousehold " + households[0].name);
 
     if (!storedHousehold) return;
 
     const household: Household = JSON.parse(storedHousehold);
     const validHousehold = households.find(h => h.id === household.id)
+
     if (validHousehold) {
       this.activeHouseholdSubject.next(validHousehold);
     } else {
+
       this.clearActiveHousehold();
     }
 
@@ -76,8 +81,9 @@ export class HouseholdService {
     return this.activeHouseholdSubject.getValue();
   }
 
-  setHouseholdSubject(households: Household[]) {
+  setHouseholdsSubject(households: Household[]) {
     this.householdsSubject.next(households);
+    this.restoreActiveHousehold(households);
   }
 
   clearActiveHousehold() {

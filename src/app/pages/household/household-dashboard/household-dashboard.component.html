@@ -9,5 +9,14 @@
             (selected)="onSelectItem(householdItem.id)"></app-household-table-item>
         }
     </div>
+    <br>
+    @if (selectedHouseholdId()) {
+    <div class="flex justify-center">
+        <button class="btn btn-select" (click)="handleSelect()">
+            Select household
+        </button>
+    </div>
+
+    }
     }
 </app-household-layout>

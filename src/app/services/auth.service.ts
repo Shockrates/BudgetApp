@@ -62,8 +62,10 @@ export class AuthService {
             name: resp.data.user.userName,
             email: resp.data.user.userEmail
           }
+          console.log("From Auth Service Constructor " + resp.data.userHouseholds[0].name);
           this.loggedUserSubject.next(user);
-          this.householdService.setHouseholdSubject(resp.data.userHouseholds);
+          this.householdService.setHouseholdsSubject(resp.data.userHouseholds);
+
         }
 
       });
