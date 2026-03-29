@@ -10,6 +10,7 @@ export const HouseholdGuard: CanActivateFn = (route, state) => {
   const active = householdService.getActiveHousehold();
 
   if (!active) {
+    console.log("GUARD RUNS ");
     router.navigate(['/household/dashboard']);
     return false;
   }

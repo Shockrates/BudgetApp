@@ -21,20 +21,16 @@ export class HouseholdService {
   activeHouseholds$ = this.activeHouseholdSubject.asObservable();
 
   constructor() {
-
-
-    //this.restoreActiveHousehold(this.householdsSubject.getValue());
   }
 
   loadLoggedUserHouseholds() {
     return this.http.get<UserHouseholdResponse>('api/users/me/households').pipe(
       map(response => response.data.userHouseholds),
       tap(households => {
-        this.householdsSubject.next(households);
-        this.restoreActiveHousehold(households);
-        console.log(this.householdsSubject.value);
-
-
+        // this.householdsSubject.next(households);
+        // this.restoreActiveHousehold(households);
+        this.setHouseholdsSubject(households);
+        console.log("SERVICE RUNS");
       }),
       catchError(err => {
         console.error('Failed to load households', err);
@@ -48,7 +44,10 @@ export class HouseholdService {
     const storedHousehold = localStorage.getItem(this.ACTIVE_HOUSEHOLD_KEY);
     // console.log("From restoreActiveHousehold " + households[0].name);
 
-    if (!storedHousehold) return;
+    if (!storedHousehold) {
+      this.activeHouseholdSubject.next(null);
+      return;
+    }
 
     const household: Household = JSON.parse(storedHousehold);
     const validHousehold = households.find(h => h.id === household.id)
@@ -79,6 +78,9 @@ export class HouseholdService {
 
   getActiveHousehold(): Household | null {
     return this.activeHouseholdSubject.getValue();
+  }
+  getHouseholds(): Household[] {
+    return this.householdsSubject.getValue();
   }
 
   setHouseholdsSubject(households: Household[]) {

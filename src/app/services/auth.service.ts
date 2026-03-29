@@ -30,46 +30,38 @@ export class AuthService {
   private householdService = inject(HouseholdService);
 
   constructor() {
-    this.loadStoredUser()
+    // this.loadStoredUser()
   }
 
-  loadStoredUser() {
-    const jwtToken = this.jwtService.getToken();
+  // loadStoredUser() {
+  //   const jwtToken = this.jwtService.getToken();
 
-    if (!this.isAuthenticated()) {
-      return;
-    }
+  //   if (!this.isAuthenticated()) {
+  //     return;
+  //   }
 
-    this.http.get<UserHouseholdResponse>('/api/users/me/households').pipe(
-      catchError(error => {
-
-        console.error('Error fetching user data:', error);
-
-        // Handle specific error cases
-        if (error.status === 401) {
-          console.warn('Unauthorized access - token may be invalid.');
-        } else {
-          console.warn('Failed to load user data. Please try again later.');
-        }
-        return of(null);
-      })
-    )
-      .subscribe(resp => {
-
-        if (resp) {
-          const user: User = {
-            id: resp.data.user.userId.toString(),
-            name: resp.data.user.userName,
-            email: resp.data.user.userEmail
-          }
-          console.log("From Auth Service Constructor " + resp.data.userHouseholds[0].name);
-          this.loggedUserSubject.next(user);
-          this.householdService.setHouseholdsSubject(resp.data.userHouseholds);
-
-        }
-
-      });
-  }
+  //   this.http.get<UserHouseholdResponse>('/api/users/me/households').pipe(
+  //     catchError(error => {
+  //       console.error('Error fetching user data:', error);
+  //       if (error.status === 401) {
+  //         console.warn('Unauthorized access - token may be invalid.');
+  //       } else {
+  //         console.warn('Failed to load user data. Please try again later.');
+  //       }
+  //       return of(null);
+  //     })
+  //   )
+  //     .subscribe(resp => {
+  //       if (resp) {
+  //         const user: User = {
+  //           id: resp.data.user.userId.toString(),
+  //           name: resp.data.user.userName,
+  //           email: resp.data.user.userEmail
+  //         }
+  //         this.loggedUserSubject.next(user);
+  //       }
+  //     });
+  // }
 
   register(user: RegisterCredentials) {
     return this.http.post<any>(this.REGISTER_URL, user).pipe(
@@ -108,6 +100,10 @@ export class AuthService {
     this.isAuthenticatedSubject.next(true);
     this.jwtService.storeJwtToken(response.data.token);
 
+  }
+
+  setCurrentUser(user: User): void {
+    this.loggedUserSubject.next(user);
   }
 
   getCurrentUser(): User | null {

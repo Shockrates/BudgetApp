@@ -16,7 +16,7 @@ export class AuthLayoutComponent {
   public layoutState = inject(AuthLayoutStateService);
   private router = inject(Router);
 
-  
+
   // logEffect = effect(() => {
   //   console.log(this.layoutState.config());
   // });
@@ -27,16 +27,16 @@ export class AuthLayoutComponent {
       setTimeout(() => {
         this.router.navigateByUrl(authConfig.redirectUrl);
         this.layoutState.reset();
-      }, 2000);
+      }, 1000);
     }
   });
 
   constructor() {
-    
+
   }
 
-  
-  
+
+
 
 
 

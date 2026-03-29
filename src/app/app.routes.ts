@@ -10,23 +10,15 @@ import { HouseholdDashboardComponent } from './pages/household/household-dashboa
 import { HouseholdCreationComponent } from './pages/household/household-creation/household-creation.component';
 import { HouseholdGuard } from './guards/household.guard';
 
+
 export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
         redirectTo: 'home'
     },
-    {
-        path: 'home',
-        component: HomeComponent,
-        canActivate: [authGuard, HouseholdGuard]
-    },
-    {
-        path: 'details/:id',
-        component: BudgetDetailsComponent,
-        canActivate: [authGuard]
 
-    },
+
     {
         path: 'create-account',
         component: CreateAccountComponent
@@ -40,19 +32,35 @@ export const routes: Routes = [
         component: RegisterComponent
     },
     {
-        path: 'household',
+        path: '',
+        canActivate: [authGuard],
         children: [
             {
-                path: 'dashboard',
-                component: HouseholdDashboardComponent
+                path: 'home',
+                component: HomeComponent,
+                canActivate: [HouseholdGuard]
             },
             {
-                path: 'create',
-                component: HouseholdCreationComponent
-            },
+                path: 'details/:id',
+                component: BudgetDetailsComponent,
+                canActivate: [HouseholdGuard]
 
-        ],
-        canActivate: [authGuard]
+            },
+            {
+                path: 'household',
+                children: [
+                    {
+                        path: 'dashboard',
+                        component: HouseholdDashboardComponent
+                    },
+                    {
+                        path: 'create',
+                        component: HouseholdCreationComponent
+                    },
+
+                ],
+            }]
     }
+
 
 ];
