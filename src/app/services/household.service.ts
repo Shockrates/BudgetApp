@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, map, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, of, switchMap, tap } from 'rxjs';
 import { Household } from '../interfaces/models/household.interface';
 import { UserHouseholdResponse } from '../interfaces/api/UserHouseholdResponse';
+import { HouseholdResponse } from '../interfaces/api/householdResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -27,14 +28,30 @@ export class HouseholdService {
     return this.http.get<UserHouseholdResponse>('api/users/me/households').pipe(
       map(response => response.data.userHouseholds),
       tap(households => {
-        // this.householdsSubject.next(households);
-        // this.restoreActiveHousehold(households);
         this.setHouseholdsSubject(households);
         console.log("SERVICE RUNS");
       }),
       catchError(err => {
         console.error('Failed to load households', err);
         return of([]); // fallback to empty array
+      })
+    )
+  }
+
+  createHousehold(name: string) {
+    return this.http.post<HouseholdResponse>(this.HOUSEHOLD_URL, { name: name }).pipe(
+      map(response => response.data),
+      switchMap((household) =>
+        this.loadLoggedUserHouseholds().pipe(
+          tap(() =>
+            this.setActiveHousehold(household)
+          ),
+          map(() => household)
+        ),
+      ),
+      catchError(err => {
+        console.error('Failed to save households', err);
+        return of(null);
       })
     )
   }

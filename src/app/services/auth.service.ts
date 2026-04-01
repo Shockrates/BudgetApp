@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { User } from '../interfaces/models/user.interface';
 import { LoginCredentials } from '../interfaces/api/LoginCredentials.interface';
-import { LoginResponse } from '../interfaces/api/LoginResponse.Interface';
+import { LoginResponse } from '../interfaces/api/LoginResponse.Interface'
 import { RegisterCredentials } from '../interfaces/api/register-credentials';
 import { JwtService } from './jwt.service';
 import { catchError, switchMap } from 'rxjs/operators';

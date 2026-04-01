@@ -5,10 +5,11 @@ import { Household } from '../../../interfaces/models/household.interface';
 import { HouseholdTableCardComponent } from '../household-table-item/household-table-item.component';
 import { HouseholdItemConfig } from '../../../interfaces/ui-config/household-item-config.interface';
 import { Router } from '@angular/router';
+import { HouseholdCreationComponent } from "../household-creation/household-creation.component";
 
 @Component({
   selector: 'app-household-dashboard',
-  imports: [HouseholdLayoutComponent, HouseholdTableCardComponent],
+  imports: [HouseholdLayoutComponent, HouseholdTableCardComponent, HouseholdCreationComponent],
   templateUrl: './household-dashboard.component.html',
   styleUrl: './household-dashboard.component.css'
 })

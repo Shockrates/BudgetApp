@@ -1,12 +1,23 @@
 <nav class="flex justify-between items-center p-6">
-    <div (click)="router.navigateByUrl('')" class="logo p-2 cursor-pointer flex item-center gap-x-2">
-        <img src="home-icon-silhouette-svgrepo-com.svg" class="w-6 h-6">
-        <p class="text-2xl font-bold">Home</p>
+    <div class="flex flex-start gap-x-4">
+        <div (click)="router.navigateByUrl('')" class="logo p-2 cursor-pointer flex item-center gap-x-2">
+            <img src="home-icon-silhouette-svgrepo-com.svg" class="w-6 h-6">
+            <p class="text-2xl font-bold">Home</p>
+        </div>
+        @if (authService.isAuthenticated()) {
+        <div (click)="router.navigateByUrl('/household/dashboard')"
+            class="logo p-2 cursor-pointer flex item-center gap-x-2 hover:text-customHsl-accent duration-300 ease-in-out">
+
+            <p class="text-2xl font-bold">Your Households</p>
+        </div>
+        }
+
     </div>
+
 
     @if (layoutState.config().status === "default") {
 
-        @if (user$ | async; as user ) {
+    @if (user$ | async; as user ) {
     <div class="
     ">{{user.name}}</div>
     }
@@ -25,6 +36,6 @@
 
     }
 
-    
+
 
 </nav>

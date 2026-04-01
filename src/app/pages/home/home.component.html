@@ -1,7 +1,12 @@
 <div class="home-container px-10 flex flex-col gap-x-8">
-    <h1 class="text-6xl font-bold">Welcome back,
+    <h1 class="text-4xl font-bold">Welcome back,
         <span class="text-customHsl-accent">{{user?.name || "Guest"}}</span>
     </h1>
+    @if (activeHousehold) {
+    <h2 class="text-4xl font-medium my-8">You are curently working on,
+        <span class="text-customHsl-accent">{{activeHousehold.name}}</span>
+    </h2>
+    }
 
     <div class="input-container flex flex-col md:flex-row w-full gap-x-8 mt-6">
         <!-- Category Form -->
