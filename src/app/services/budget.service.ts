@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
 import { Budget } from '../interfaces/models/budget.interface';
 import { BudgetCategory } from '../interfaces/models/budget-category.interface';
+import { HttpClient } from '@angular/common/http';
+import { BudgetResponse } from '../interfaces/api/budgetResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,9 @@ export class BudgetService {
 
   public BUDGETS: string = 'BUDGETS';
   public BUDGET_CATEGORIES = 'BUDGET_CATEGORIES';
+  private readonly BUDGET_URL = 'api/categories';
 
+  http = inject(HttpClient);
 
   public budgetSubject: Subject<Budget[]> = new Subject();
   public budgetCategorySubject: Subject<BudgetCategory[]> = new Subject();
@@ -25,9 +29,21 @@ export class BudgetService {
   }
 
 
-  getBudgets(): Budget[] {
-    const budgets = JSON.parse(localStorage.getItem(this.BUDGETS) || '[]') as Budget[]
-    return budgets
+  getBudgets() {
+    //const budgets = JSON.parse(localStorage.getItem(this.BUDGETS) || '[]') as Budget[]
+    //return budgets
+    return this.http.get<BudgetResponse>(this.BUDGET_URL).pipe(
+      map(response => response.data),
+      tap(budgets => {
+        this.setBudgets(budgets);
+        console.log("SERVICE RUNS");
+      }),
+      catchError(err => {
+        console.error('Failed to load budgets', err);
+        return of([]); // fallback to empty array
+      })
+    )
+
   }
 
   getBudgetsCount(): number {
