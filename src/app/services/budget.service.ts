@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, map, Observable, of, BehaviorSubject, tap, EMPTY } from 'rxjs';
 import { Budget } from '../interfaces/models/budget.interface';
 import { BudgetCategory } from '../interfaces/models/budget-category.interface';
 import { HttpClient } from '@angular/common/http';
@@ -16,82 +16,123 @@ export class BudgetService {
 
   http = inject(HttpClient);
 
-  public budgetSubject: Subject<Budget[]> = new Subject();
-  public budgetCategorySubject: Subject<BudgetCategory[]> = new Subject();
+  // Changed to BehaviorSubject to maintain current state and allow late subscribers
+  private budgetSubject: BehaviorSubject<Budget[]> = new BehaviorSubject<Budget[]>([]);
+  public budgets$ = this.budgetSubject.asObservable();
+  private budgetCategorySubject: BehaviorSubject<BudgetCategory[]> = new BehaviorSubject<BudgetCategory[]>([]);
+  public budgetCategoriess$ = this.budgetCategorySubject.asObservable();
+
+  private budgetsLoaded = false;
 
 
   constructor() { }
 
-  addBudget(budget: Budget) {
-    const budgets = this.getBudgets();
-    budgets.push(budget);
-    this.setBudgets(budgets)
+  /**
+   * Add a new budget via API
+   * Returns Observable to allow component to handle response
+   * Avoids unwanted subscriptions by being called on demand
+   */
+  addBudget(budget: Budget): Observable<Budget> {
+    return this.http.post<Budget>(`${this.BUDGET_URL}`, budget).pipe(
+      tap(newBudget => {
+        const currentBudgets = this.budgetSubject.getValue();
+        this.setBudgets([...currentBudgets, newBudget]);
+      }),
+      catchError(err => {
+        console.error('Failed to add budget', err);
+        throw err;
+      })
+    );
   }
 
 
-  getBudgets() {
-    //const budgets = JSON.parse(localStorage.getItem(this.BUDGETS) || '[]') as Budget[]
-    //return budgets
-    return this.http.get<BudgetResponse>(this.BUDGET_URL).pipe(
+  loadBudgets(): void {
+
+    if (this.budgetsLoaded) {
+      return;
+    }
+    this.budgetsLoaded = true;
+    this.http.get<BudgetResponse>(this.BUDGET_URL).pipe(
       map(response => response.data),
       tap(budgets => {
         this.setBudgets(budgets);
-        console.log("SERVICE RUNS");
       }),
       catchError(err => {
         console.error('Failed to load budgets', err);
-        return of([]); // fallback to empty array
+        this.budgetsLoaded = false; // allow retry
+        return EMPTY;
       })
-    )
-
+    ).subscribe();
   }
 
+  /**
+   * Get budget count from cached data (no API call needed)
+   * Synchronized with budgetSubject
+   */
   getBudgetsCount(): number {
-    const budgets = JSON.parse(localStorage.getItem(this.BUDGETS) || '[]') as Budget[]
-    return budgets.length;
+    return this.budgetSubject.getValue().length;
   }
 
-  updateBudgetAmount(budgetId: string, spent: number) {
-    const budgets = this.getBudgets();
-
-    const index = budgets.findIndex(x => x.id === budgetId);
-    if (index > - 1) {
-      budgets[index].spent = spent;
-      this.setBudgets(budgets);
-      return;
-    }
-
-    throw Error('can not update for a budget that does not exist')
+  /**
+   * Update budget amount via API
+   * Returns Observable for async handling
+   */
+  updateBudgetAmount(budgetId: string, spent: number): Observable<Budget> {
+    return this.http.put<Budget>(`${this.BUDGET_URL}/${budgetId}`, { spent }).pipe(
+      tap(updatedBudget => {
+        const budgets = this.budgetSubject.getValue();
+        const index = budgets.findIndex(x => x.id === budgetId);
+        if (index > -1) {
+          budgets[index] = updatedBudget;
+          this.setBudgets([...budgets]);
+        }
+      }),
+      catchError(err => {
+        console.error(`Failed to update budget ${budgetId}`, err);
+        throw err;
+      })
+    );
   }
 
+  /**
+   * Get budget categories from cached data
+   * Read from BehaviorSubject for synchronous access
+   */
   getBudgetCategories(): BudgetCategory[] {
-    const budgetCategories = JSON.parse(localStorage.getItem(this.BUDGET_CATEGORIES) || '[]') as BudgetCategory[]
-    return budgetCategories
+    return this.budgetCategorySubject.getValue();
   }
 
-  getBudgetById(budgetId: string) {
-    const budgets = this.getBudgets();
+  /**
+   * Get budget by ID from cached data
+   * Synchronous read from BehaviorSubject
+   */
+  getBudgetById(budgetId: string): Budget {
+    const budgets = this.budgetSubject.getValue();
     const index = budgets.findIndex(x => x.id === budgetId);
     if (index > -1) {
       return budgets[index];
     }
-    throw Error('This Budget does no exists');
-
+    throw Error('This Budget does not exist');
   }
 
-  getBudgetCategoryById(id: string) {
-    const categories = this.getBudgetCategories();
-    const index = categories.findIndex(x => x.id === id)
+  /**
+   * Get budget category by ID from cached data
+   * Synchronous read from BehaviorSubject
+   */
+  getBudgetCategoryById(id: string): BudgetCategory {
+    const categories = this.budgetCategorySubject.getValue();
+    const index = categories.findIndex(x => x.id === id);
     if (index > -1) {
       return categories[index];
     }
-
     throw Error('Category does not exist');
-
   }
 
-
-  setBudgets(budgets: Budget[]) {
+  /**
+   * Internal method to update budget state and localStorage
+   * Called after successful API operations
+   */
+  private setBudgets(budgets: Budget[]) {
     localStorage.setItem(this.BUDGETS, JSON.stringify(budgets));
 
     const budgetCategories: BudgetCategory[] = budgets.map((item: Budget) => {
@@ -99,32 +140,51 @@ export class BudgetService {
         color: item.color,
         id: item.id,
         name: item.name
-      } as BudgetCategory
-
-    })
+      } as BudgetCategory;
+    });
     this.setBudgetCategories(budgetCategories);
     this.budgetSubject.next(budgets);
-
   }
 
-  setBudgetCategories(budgetCategories: BudgetCategory[]) {
+  /**
+   * Internal method to update budget categories state
+   */
+  private setBudgetCategories(budgetCategories: BudgetCategory[]) {
     localStorage.setItem(this.BUDGET_CATEGORIES, JSON.stringify(budgetCategories));
     this.budgetCategorySubject.next(budgetCategories);
   }
 
+  /**
+   * Observable stream of budget data
+   * Use in components with async pipe to avoid manual subscriptions
+   */
   getBudgetData(): Observable<Budget[]> {
-    return this.budgetSubject
+    return this.budgetSubject.asObservable();
   }
 
+  /**
+   * Observable stream of budget category data
+   * Use in components with async pipe to avoid manual subscriptions
+   */
   getBudgetCategoryData(): Observable<BudgetCategory[]> {
-    return this.budgetCategorySubject
+    return this.budgetCategorySubject.asObservable();
   }
 
-  deleteBudgetById(budgetId: string) {
-    const budgets = this.getBudgets();
-
-    const filteredBudgets = budgets.filter((item) => item.id !== budgetId);
-    this.setBudgets(filteredBudgets);
+  /**
+   * Delete a budget via API
+   * Returns Observable for async handling
+   */
+  deleteBudgetById(budgetId: string): Observable<void> {
+    return this.http.delete<void>(`${this.BUDGET_URL}/${budgetId}`).pipe(
+      tap(() => {
+        const budgets = this.budgetSubject.getValue();
+        const filteredBudgets = budgets.filter((item) => item.id !== budgetId);
+        this.setBudgets(filteredBudgets);
+      }),
+      catchError(err => {
+        console.error(`Failed to delete budget ${budgetId}`, err);
+        throw err;
+      })
+    );
   }
-
 }

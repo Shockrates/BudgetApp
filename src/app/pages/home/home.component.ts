@@ -1,5 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { UserService } from '../../services/user.service';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormWrapperComponent } from "../../components/form-wrapper/form-wrapper.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BudgetService } from '../../services/budget.service';
@@ -19,6 +18,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../interfaces/models/user.interface';
 import { HouseholdService } from '../../services/household.service';
 import { Household } from '../../interfaces/models/household.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -35,11 +35,13 @@ export class HomeComponent implements OnInit {
   private authService = inject(AuthService);
   private householdService = inject(HouseholdService)
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   user!: User | null;
   activeHousehold!: Household | null;
   budgetCategories: BudgetCategory[] = [];
-  budgets: Budget[] = [];
+  budgets$ = this.budgetService.budgets$;
+
   budgetCards: BudgetCardConfig[] = [];
   expenseTableData: ExpenseTableDataConfig[] = [];
 
@@ -48,8 +50,8 @@ export class HomeComponent implements OnInit {
     this.user = this.authService.getCurrentUser();
     this.activeHousehold = this.householdService.getActiveHousehold()
     this.budgetCategories = this.budgetService.getBudgetCategories();
-    this.budgets = this.budgetService.getBudgets();
-    this.buildBudgetCards(this.budgets);
+    //this.budgets = this.budgetService.getBudgets();
+    //this.buildBudgetCards(this.budgets);
 
 
     this.budgetService.getBudgetCategoryData().subscribe({
@@ -62,17 +64,20 @@ export class HomeComponent implements OnInit {
 
       }
     })
-    this.budgetService.getBudgetData().subscribe({
-      next: (res: Budget[]) => {
-        this.budgets = res;
-        this.buildBudgetCards(this.budgets);
-        console.log('New Budget Category Added:', this.budgets);
-      },
-      error: (error: any) => {
-        console.error(error);
 
-      }
-    })
+    this.budgetService.loadBudgets();
+    this.budgetService.budgets$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: Budget[]) => {
+          this.buildBudgetCards(res);
+          console.log('New Budget Category Added:', res);
+        },
+        error: (error: any) => {
+          console.error(error);
+
+        }
+      })
     const expenses = this.expenseService.getExpenses();
     this.expenseTableData = this.expenseService.buildExpenseTable(expenses);
     this.expenseService.getExpenseData().subscribe({
@@ -87,10 +92,6 @@ export class HomeComponent implements OnInit {
 
   }
 
-  // budgetForm: FormGroup = new FormGroup({
-  //   name: new FormControl('', [Validators.required]),
-  //   budget: new FormControl(null, [Validators.required])
-  // })
 
   expenseForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -98,18 +99,7 @@ export class HomeComponent implements OnInit {
     budgetCategoryId: new FormControl(null, [Validators.required])
   })
 
-  // addBudget() {
-  //   const budget: Budget = {
-  //     id: uuidv4(),
-  //     name: this.budgetForm.value.name,
-  //     budget: parseInt(this.budgetForm.value.budget),
-  //     spent: 0,
-  //     color: this.uiService.generateRandomColor(this.budgets.length + 1)
-  //   }
-  //   this.budgetService.addBudget(budget);
-  //   this.budgetForm.reset();
 
-  // }
 
   addExpense() {
     const category = this.budgetService.getBudgetCategoryById(this.expenseForm.value.budgetCategoryId)
