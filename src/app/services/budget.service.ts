@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, Observable, of, BehaviorSubject, tap, EMPTY } from 'rxjs';
+import { catchError, map, Observable, of, BehaviorSubject, tap, EMPTY, distinctUntilChanged } from 'rxjs';
 import { Budget } from '../interfaces/models/budget.interface';
 import { BudgetCategory } from '../interfaces/models/budget-category.interface';
 import { HttpClient } from '@angular/common/http';
 import { BudgetResponse } from '../interfaces/api/budgetResponse.interface';
+import { HouseholdService } from './household.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class BudgetService {
   private readonly BUDGET_URL = 'api/categories';
 
   http = inject(HttpClient);
+  householdService = inject(HouseholdService);
 
   // Changed to BehaviorSubject to maintain current state and allow late subscribers
   private budgetSubject: BehaviorSubject<Budget[]> = new BehaviorSubject<Budget[]>([]);
@@ -25,17 +27,29 @@ export class BudgetService {
   private budgetsLoaded = false;
 
 
-  constructor() { }
+  constructor() {
+    this.watchActiveHousehold();
+  }
 
-  /**
-   * Add a new budget via API
-   * Returns Observable to allow component to handle response
-   * Avoids unwanted subscriptions by being called on demand
-   */
+  private watchActiveHousehold() {
+    this.householdService.activeHouseholds$.pipe(
+      distinctUntilChanged((prev, curr) => prev?.id === curr?.id),
+      tap(household => {
+        this.budgetsLoaded = false;
+        if (household?.id) {
+          this.loadBudgets();
+        } else {
+          this.setBudgets([]);
+        }
+      })
+    ).subscribe();
+  }
   addBudget(budget: Budget): Observable<Budget> {
     return this.http.post<Budget>(`${this.BUDGET_URL}`, budget).pipe(
       tap(newBudget => {
         const currentBudgets = this.budgetSubject.getValue();
+        console.log("CREATING BUDGET...");
+
         this.setBudgets([...currentBudgets, newBudget]);
       }),
       catchError(err => {
@@ -51,11 +65,22 @@ export class BudgetService {
     if (this.budgetsLoaded) {
       return;
     }
+
+    const activeHousehold = this.householdService.getActiveHousehold();
+    if (!activeHousehold || !activeHousehold.id) {
+      console.warn('Cannot load budgets: No active household');
+      this.setBudgets([]);
+      return;
+    }
+
     this.budgetsLoaded = true;
-    this.http.get<BudgetResponse>(this.BUDGET_URL).pipe(
+    const url = `${this.BUDGET_URL}/household/${activeHousehold.id}`;
+
+    this.http.get<BudgetResponse>(url).pipe(
       map(response => response.data),
       tap(budgets => {
         this.setBudgets(budgets);
+
       }),
       catchError(err => {
         console.error('Failed to load budgets', err);

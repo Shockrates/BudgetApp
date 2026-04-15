@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { BudgetCardConfig } from '../../interfaces/ui-config/budget-card-config.interface';
 import { Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
@@ -10,7 +10,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './budget-card.component.html',
   styleUrl: './budget-card.component.css'
 })
-export class BudgetCardComponent implements OnInit {
+export class BudgetCardComponent implements OnInit, OnChanges {
+
 
 
 
@@ -27,6 +28,16 @@ export class BudgetCardComponent implements OnInit {
   uiService = inject(UiService);
 
   ngOnInit(): void {
+    this.updateColors()
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['config']) {
+      this.updateColors();
+    }
+  }
+
+  private updateColors(): void {
     if (!this.config) {
       return;
     }
