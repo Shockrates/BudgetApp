@@ -118,7 +118,7 @@ export class HomeComponent implements OnInit {
     this.budgetCards = budgets.map((item: Budget) => {
       return {
         name: item.name,
-        budget: item.budget,
+        budget: item.budgetLimit,
         spent: item.spent,
         color: item.color,
         onClick: () => {

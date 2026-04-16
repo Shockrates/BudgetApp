@@ -3,7 +3,7 @@ import { Color } from "../../shared/types/colors";
 export interface Budget {
     id: string;
     name: string;
-    budget: number;
+    budgetLimit: number;
     spent: number;
     color: Color;
 }

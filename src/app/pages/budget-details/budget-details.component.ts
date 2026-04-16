@@ -82,7 +82,7 @@ export class BudgetDetailsComponent implements OnInit {
 
     this.budgetCard = {
       name: budget.name,
-      budget: budget.budget,
+      budget: budget.budgetLimit,
       spent: budget.spent,
       color: budget.color,
       onClick: () => {

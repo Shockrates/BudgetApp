@@ -26,7 +26,7 @@ export class BudgetFormComponent {
     const budget: Budget = {
       id: uuidv4(),
       name: this.budgetForm.value.name,
-      budget: parseInt(this.budgetForm.value.budget),
+      budgetLimit: parseInt(this.budgetForm.value.budget),
       spent: 0,
       color: this.uiService.generateRandomColor(budgetCount + 1)
     }
