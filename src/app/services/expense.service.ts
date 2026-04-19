@@ -24,7 +24,7 @@ export class ExpenseService {
   }
 
 
-  getExpensesByBudgetId(budgetId: string): Expense[] {
+  getExpensesByBudgetId(budgetId: number): Expense[] {
     const expenses = this.getExpenses();
     const filteredExpenses = expenses.filter((expense: Expense) => expense.budgetCategory.id === budgetId);
     return filteredExpenses;
@@ -42,7 +42,7 @@ export class ExpenseService {
     }
   }
 
-  updateBudgets(expenses: Expense[], budgetId: string) {
+  updateBudgets(expenses: Expense[], budgetId: number) {
     const budgetExpenses = expenses.filter((expense) => expense.budgetCategory.id === budgetId);
     const totalExpensesAmount = budgetExpenses.reduce((sum: number, current: Expense) => sum + current.amount, 0);
     this.budgetService.updateBudgetAmount(budgetId, totalExpensesAmount);
@@ -66,7 +66,7 @@ export class ExpenseService {
     this.expenseSubject.next(expenses);
   }
 
-  deleteExpenseById(expenseId: string) {
+  deleteExpenseById(expenseId: number) {
     const expenses = this.getExpenses();
     //Need to be a seperate method
     const expense = expenses.filter((expense: Expense) => expense.id === expenseId)[0]
@@ -79,7 +79,7 @@ export class ExpenseService {
     this.updateBudgets(filteredExpenses, expense.budgetCategory.id);
   }
 
-  deleteExpenseByBudgetId(budgetId: string) {
+  deleteExpenseByBudgetId(budgetId: number) {
     const expenses = this.getExpenses();
     const filteredExpenses = expenses.filter((expense: Expense) => expense.budgetCategory.id != budgetId);
     this.setExpenses(filteredExpenses);

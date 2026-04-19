@@ -24,9 +24,10 @@ export class BudgetDetailsComponent implements OnInit {
 
   budgetCard!: BudgetCardConfig;
   expenseTableData: ExpenseTableDataConfig[] = [];
-  budgetId: string = '';
+  budgetId!: number;
 
   router = inject(Router);
+  route = inject(ActivatedRoute);
   expenseService = inject(ExpenseService);
   budgetService = inject(BudgetService);
   activatedRoute = inject(ActivatedRoute);
@@ -42,7 +43,7 @@ export class BudgetDetailsComponent implements OnInit {
 
     this.activatedRoute.params.pipe(
       map((params: Params) => params['id']),
-      tap((id: string) => {
+      tap((id: number) => {
         this.budgetId = id;
         this.initializeData()
       }),
@@ -64,7 +65,7 @@ export class BudgetDetailsComponent implements OnInit {
   addExpense() {
     const category = this.budgetService.getBudgetCategoryById(this.budgetId);
     const expense: Expense = {
-      id: uuidv4(),
+      id: Math.floor(Math.random() * 1000000),
       name: this.expenseForm.value.name,
       budgetCategory: category,
       amount: parseInt(this.expenseForm.value.amount),
@@ -78,7 +79,8 @@ export class BudgetDetailsComponent implements OnInit {
   }
 
   initializeData() {
-    const budget = this.budgetService.getBudgetById(this.budgetId);
+    //const budget = this.budgetService.getBudgetById(this.budgetId);
+    const budget = this.route.snapshot.data['budget'];
 
     this.budgetCard = {
       name: budget.name,

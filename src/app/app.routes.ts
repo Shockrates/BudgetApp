@@ -9,6 +9,7 @@ import { AuthSuccessComponent } from './pages/auth/authsuccess/authsuccess.compo
 import { HouseholdDashboardComponent } from './pages/household/household-dashboard/household-dashboard.component';
 import { HouseholdCreationComponent } from './pages/household/household-creation/household-creation.component';
 import { HouseholdGuard } from './guards/household.guard';
+import { budgetResolver } from './resolvers/budget.resolver';
 
 
 export const routes: Routes = [
@@ -43,7 +44,10 @@ export const routes: Routes = [
             {
                 path: 'details/:id',
                 component: BudgetDetailsComponent,
-                canActivate: [HouseholdGuard]
+                canActivate: [HouseholdGuard],
+                resolve: {
+                    budget: budgetResolver
+                }
 
             },
             {

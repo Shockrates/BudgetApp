@@ -65,7 +65,7 @@ export class BudgetService {
     if (this.budgetsLoaded) {
       return;
     }
-
+    console.log('LOADING BUDGETS...');
     const activeHousehold = this.householdService.getActiveHousehold();
     if (!activeHousehold || !activeHousehold.id) {
       console.warn('Cannot load budgets: No active household');
@@ -102,7 +102,7 @@ export class BudgetService {
    * Update budget amount via API
    * Returns Observable for async handling
    */
-  updateBudgetAmount(budgetId: string, spent: number): Observable<Budget> {
+  updateBudgetAmount(budgetId: number, spent: number): Observable<Budget> {
     return this.http.put<Budget>(`${this.BUDGET_URL}/${budgetId}`, { spent }).pipe(
       tap(updatedBudget => {
         const budgets = this.budgetSubject.getValue();
@@ -131,7 +131,7 @@ export class BudgetService {
    * Get budget by ID from cached data
    * Synchronous read from BehaviorSubject
    */
-  getBudgetById(budgetId: string): Budget {
+  getBudgetById(budgetId: number): Budget {
     const budgets = this.budgetSubject.getValue();
     const index = budgets.findIndex(x => x.id === budgetId);
     if (index > -1) {
@@ -144,7 +144,7 @@ export class BudgetService {
    * Get budget category by ID from cached data
    * Synchronous read from BehaviorSubject
    */
-  getBudgetCategoryById(id: string): BudgetCategory {
+  getBudgetCategoryById(id: number): BudgetCategory {
     const categories = this.budgetCategorySubject.getValue();
     const index = categories.findIndex(x => x.id === id);
     if (index > -1) {
@@ -199,7 +199,7 @@ export class BudgetService {
    * Delete a budget via API
    * Returns Observable for async handling
    */
-  deleteBudgetById(budgetId: string): Observable<void> {
+  deleteBudgetById(budgetId: number): Observable<void> {
     return this.http.delete<void>(`${this.BUDGET_URL}/${budgetId}`).pipe(
       tap(() => {
         const budgets = this.budgetSubject.getValue();

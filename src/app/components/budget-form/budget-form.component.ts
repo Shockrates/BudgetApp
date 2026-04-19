@@ -24,7 +24,7 @@ export class BudgetFormComponent {
   addBudget() {
     const budgetCount = this.budgetService.getBudgetsCount();
     const budget: Budget = {
-      id: uuidv4(),
+      id: Math.floor(Math.random() * 1000000),
       name: this.budgetForm.value.name,
       budgetLimit: parseInt(this.budgetForm.value.budget),
       spent: 0,

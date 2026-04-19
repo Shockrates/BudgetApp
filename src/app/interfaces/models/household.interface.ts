@@ -1,5 +1,5 @@
 export interface Household {
-  id: string;
+  id: number;
   name: string;
   creatorId: string;
   creatorName: string;
