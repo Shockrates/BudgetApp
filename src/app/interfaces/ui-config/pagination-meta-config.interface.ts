@@ -1,6 +1,8 @@
 export interface PaginationMetaConfig {
-  page: number;
-  size: number;
+  pageNumber: number;
+  pageSize: number;
   totalElements: number;
   totalPages: number;
+  numberOfElements: number;
+  last: boolean;
 }

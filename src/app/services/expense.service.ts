@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { BudgetService } from './budget.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, Observable, Subject, tap } from 'rxjs';
 import { Expense } from '../interfaces/models/expense.interface';
 import { ExpenseTableDataConfig } from '../interfaces/ui-config/expense-table-config.interface';
 import { HttpClient } from '@angular/common/http';
 import { ExpensePageConfig } from '../interfaces/ui-config/expense-page-config.interface';
 import { PaginationMetaConfig } from '../interfaces/ui-config/pagination-meta-config.interface';
+import { ExpenseResponse } from '../interfaces/api/expenseResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class ExpenseService {
 
   EXPENSES: string = 'EXPENSES';
   private readonly EXPENSE_URL = 'api/expense';
-  
+
   //expenseSubject: Subject<Expense[]> = new Subject();
   private expenseSubject = new BehaviorSubject<Expense[]>([]);
   expenses$ = this.expenseSubject.asObservable();
@@ -26,11 +27,11 @@ export class ExpenseService {
   private http = inject(HttpClient);
 
   private lastKey: string | null = null;
-  private lastValue: ExpensePageConfig | null = null;
+  private lastValue: ExpenseResponse | null = null;
 
   constructor() { }
 
-   loadExpenses(params: {
+  loadExpenses(params: {
     householdId: number;
     startDate: string;
     endDate: string;
@@ -42,14 +43,31 @@ export class ExpenseService {
 
     // Return cached result if same query
     if (this.lastKey === key && this.lastValue) {
-      this.expenseSubject.next(this.lastValue.data);
-      this.paginationSubject.next(this.lastValue.meta);
+      this.expenseSubject.next(this.lastValue.data.content);
+      this.paginationSubject.next(this.lastValue.data.meta);
       return;
     }
 
     //this.loadingSubject.next(true);
 
-    this.http.get(`this.EXPENSE_URL/household/`+params.householdId, {params})
+    this.http.get<ExpenseResponse>(`this.EXPENSE_URL/household/` + params.householdId, { params }).pipe(
+      tap(res => {
+        this.expenseSubject.next(res.data.content);
+        this.paginationSubject.next(res.data.meta);
+
+        // store last query only
+        this.lastKey = key;
+        this.lastValue = res;
+
+        //this.errorSubject.next(null);
+      }),
+      catchError(err => {
+        console.error('Failed to load expenses', err);
+        //this.errorSubject.next(err);
+        return EMPTY;
+      }),
+      //finalize(() => this.loadingSubject.next(false))
+    ).subscribe();
 
 
   }
