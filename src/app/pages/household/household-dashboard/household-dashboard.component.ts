@@ -22,7 +22,7 @@ export class HouseholdDashboardComponent implements OnInit {
 
   households: Household[] = [];
   householdItems: HouseholdItemConfig[] = [];
-  selectedHouseholdId = signal<string | null>(null);
+  selectedHouseholdId = signal<number | null>(null);
   router = inject(Router);
 
 
@@ -44,7 +44,7 @@ export class HouseholdDashboardComponent implements OnInit {
     }
   }
 
-  onSelectItem(id: string) {
+  onSelectItem(id: number) {
     if (this.selectedHouseholdId() === id) {
       this.selectedHouseholdId.set(null);
     } else {

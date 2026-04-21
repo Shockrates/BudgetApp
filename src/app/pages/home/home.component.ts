@@ -104,7 +104,7 @@ export class HomeComponent implements OnInit {
   addExpense() {
     const category = this.budgetService.getBudgetCategoryById(this.expenseForm.value.budgetCategoryId)
     const expense: Expense = {
-      id: uuidv4(),
+      id: Math.floor(Math.random() * 1000000),
       name: this.expenseForm.value.name,
       budgetCategory: category,
       amount: parseFloat(this.expenseForm.value.amount),

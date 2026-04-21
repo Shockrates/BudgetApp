@@ -1,5 +1,5 @@
 export interface HouseholdItemConfig {
-    id: string
+    id: number
     name: string,
     membersCount: number,
 }

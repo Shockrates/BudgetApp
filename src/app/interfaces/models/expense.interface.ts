@@ -1,7 +1,7 @@
 import { BudgetCategory } from "./budget-category.interface";
 
 export interface Expense {
-    id: string;
+    id: number;
     name: string;
     budgetCategory: BudgetCategory;
     amount: number;
