@@ -3,8 +3,10 @@ import { catchError, map, Observable, of, BehaviorSubject, tap, EMPTY, distinctU
 import { Budget } from '../interfaces/models/budget.interface';
 import { BudgetCategory } from '../interfaces/models/budget-category.interface';
 import { HttpClient } from '@angular/common/http';
-import { BudgetResponse } from '../interfaces/api/budgetResponse.interface';
+import { BudgetResponse } from '../interfaces/api/budget-response';
 import { HouseholdService } from './household.service';
+import { BudgetCreate } from '../interfaces/api/budgetCreate.interface';
+import { BudgetListResponse } from '../interfaces/api/budgetListResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -44,11 +46,13 @@ export class BudgetService {
       })
     ).subscribe();
   }
-  addBudget(budget: Budget): Observable<Budget> {
-    return this.http.post<Budget>(`${this.BUDGET_URL}`, budget).pipe(
-      tap(newBudget => {
+  addBudget(budget: BudgetCreate): Observable<BudgetResponse> {
+    return this.http.post<BudgetResponse>(`${this.BUDGET_URL}`, budget).pipe(
+      tap(res => {
+        console.log("CREATING BUDGET...",res.data);
         const currentBudgets = this.budgetSubject.getValue();
-        console.log("CREATING BUDGET...");
+        const newBudget = res.data
+        
 
         this.setBudgets([...currentBudgets, newBudget]);
       }),
@@ -76,7 +80,7 @@ export class BudgetService {
     this.budgetsLoaded = true;
     const url = `${this.BUDGET_URL}/household/${activeHousehold.id}`;
 
-    this.http.get<BudgetResponse>(url).pipe(
+    this.http.get<BudgetListResponse>(url).pipe(
       map(response => response.data),
       tap(budgets => {
         this.setBudgets(budgets);

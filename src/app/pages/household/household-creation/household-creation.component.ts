@@ -30,8 +30,6 @@ export class HouseholdCreationComponent {
           console.log("FROM COMPONENT: " + household.name);
           this.created.emit(household);
         }
-
-
       },
       error: err => {
         console.error(err.error.message);

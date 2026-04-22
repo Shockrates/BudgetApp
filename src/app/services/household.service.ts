@@ -96,6 +96,15 @@ export class HouseholdService {
   getActiveHousehold(): Household | null {
     return this.activeHouseholdSubject.getValue();
   }
+
+  getActiveHouseholdOrThorw(): Household  {
+    const household = this.activeHouseholdSubject.getValue();
+    if (!household) {
+      throw new Error('Active household is required but was null');
+    }
+    return household;
+  }
+  
   getHouseholds(): Household[] {
     return this.householdsSubject.getValue();
   }

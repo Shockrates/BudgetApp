@@ -4,6 +4,8 @@ import { Budget } from '../../interfaces/models/budget.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { UiService } from '../../services/ui.service';
 import { BudgetService } from '../../services/budget.service';
+import { BudgetCreate } from '../../interfaces/api/budgetCreate.interface';
+import { HouseholdService } from '../../services/household.service';
 
 @Component({
   selector: 'app-budget-form',
@@ -14,6 +16,7 @@ import { BudgetService } from '../../services/budget.service';
 export class BudgetFormComponent {
 
   private uiService = inject(UiService);
+  private householdService = inject(HouseholdService);
   private budgetService = inject(BudgetService);
 
   budgetForm: FormGroup = new FormGroup({
@@ -23,15 +26,21 @@ export class BudgetFormComponent {
 
   addBudget() {
     const budgetCount = this.budgetService.getBudgetsCount();
-    const budget: Budget = {
-      id: Math.floor(Math.random() * 1000000),
-      name: this.budgetForm.value.name,
+    const budget: BudgetCreate = {
+      categoryName: this.budgetForm.value.name,
       budgetLimit: parseInt(this.budgetForm.value.budget),
-      spent: 0,
+      householdId: this.householdService.getActiveHouseholdOrThorw().id,
       color: this.uiService.generateRandomColor(budgetCount + 1)
     }
-    this.budgetService.addBudget(budget);
-    this.budgetForm.reset();
+    this.budgetService.addBudget(budget).subscribe({
+    next: () => {
+      this.budgetForm.reset(); 
+    },
+    error: (err) => {
+      console.error('Create failed', err);
+    }
+  });
+    
 
   }
 }
