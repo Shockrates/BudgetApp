@@ -1,5 +1,5 @@
 export interface BudgetCategory {
     id: number;
-    name: string;
+    categoryName: string;
     color: string;
 }

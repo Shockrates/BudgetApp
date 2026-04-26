@@ -63,7 +63,7 @@
                     <select name="" id="" class="input-select" formControlName="budgetCategoryId">
 
                         @for (item of budgetCategories; track $index) {
-                        <option value="{{item.id}}">{{item.name}}</option>
+                        <option value="{{item.id}}">{{item.categoryName}}</option>
                         }
 
                     </select>
@@ -101,5 +101,27 @@
 
 
     }
+    //TEST CODE FOR Expenses
+    <!-- Expenses -->
+    <!-- @if (expenses$ | async; as expenses) {
+
+    @if (expenses.length === 0) {
+    <p>No expenses found</p>
+    } @else {
+
+    <ul>
+        @for (expense of expenses; track expense.id) {
+        <li>
+            <strong>{{ expense.expenseDescription }}</strong>
+            - {{ expense.expenseAmount }}€
+            - {{ expense.expenseDate }}
+            - {{ expense.categorySummary.categoryName }}
+        </li>
+        }
+    </ul>
+
+    }
+    } -->
+    ///TEST CODE FOR EXPENSE
 
 </div>

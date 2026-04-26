@@ -66,10 +66,10 @@ export class BudgetDetailsComponent implements OnInit {
     const category = this.budgetService.getBudgetCategoryById(this.budgetId);
     const expense: Expense = {
       id: Math.floor(Math.random() * 1000000),
-      name: this.expenseForm.value.name,
-      budgetCategory: category,
-      amount: parseInt(this.expenseForm.value.amount),
-      date: new Date()
+      expenseDescription: this.expenseForm.value.name,
+      categorySummary: category,
+      expenseAmount: parseInt(this.expenseForm.value.amount),
+      expenseDate: new Date()
     }
 
     this.expenseService.addExpense(expense);

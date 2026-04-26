@@ -14,7 +14,7 @@ import { ExpenseResponse } from '../interfaces/api/expenseResponse.interface';
 export class ExpenseService {
 
   EXPENSES: string = 'EXPENSES';
-  private readonly EXPENSE_URL = 'api/expense';
+  private readonly EXPENSE_URL = 'api/expenses';
 
   //expenseSubject: Subject<Expense[]> = new Subject();
   private expenseSubject = new BehaviorSubject<Expense[]>([]);
@@ -50,7 +50,7 @@ export class ExpenseService {
 
     //this.loadingSubject.next(true);
 
-    this.http.get<ExpenseResponse>(`this.EXPENSE_URL/household/` + params.householdId, { params }).pipe(
+    this.http.get<ExpenseResponse>(`${this.EXPENSE_URL}/household/` + params.householdId, { params }).pipe(
       tap(res => {
         this.expenseSubject.next(res.data.content);
         this.paginationSubject.next(res.data.meta);
@@ -83,13 +83,13 @@ export class ExpenseService {
 
   getExpensesByBudgetId(budgetId: number): Expense[] {
     const expenses = this.getExpenses();
-    const filteredExpenses = expenses.filter((expense: Expense) => expense.budgetCategory.id === budgetId);
+    const filteredExpenses = expenses.filter((expense: Expense) => expense.categorySummary.id === budgetId);
     return filteredExpenses;
   }
 
   addExpense(expense: Expense) {
     try {
-      const budget = this.budgetService.getBudgetById(expense.budgetCategory.id);
+      const budget = this.budgetService.getBudgetById(expense.categorySummary.id);
       const expenses = this.getExpenses();
       expenses.push(expense);
       this.setExpenses(expenses);
@@ -100,8 +100,8 @@ export class ExpenseService {
   }
 
   updateBudgets(expenses: Expense[], budgetId: number) {
-    const budgetExpenses = expenses.filter((expense) => expense.budgetCategory.id === budgetId);
-    const totalExpensesAmount = budgetExpenses.reduce((sum: number, current: Expense) => sum + current.amount, 0);
+    const budgetExpenses = expenses.filter((expense) => expense.categorySummary.id === budgetId);
+    const totalExpensesAmount = budgetExpenses.reduce((sum: number, current: Expense) => sum + current.expenseAmount, 0);
     this.budgetService.updateBudgetAmount(budgetId, totalExpensesAmount);
   }
 
@@ -109,11 +109,11 @@ export class ExpenseService {
     return expenses.map((item: Expense) => {
       return {
         id: item.id,
-        name: item.name,
-        amount: item.amount,
-        date: item.date,
-        budget: item.budgetCategory.name,
-        color: item.budgetCategory.color
+        name: item.expenseDescription,
+        amount: item.expenseAmount,
+        date: item.expenseDate,
+        budget: item.categorySummary.categoryName,
+        color: item.categorySummary.color
       }
     }) as ExpenseTableDataConfig[]
   }
@@ -133,12 +133,12 @@ export class ExpenseService {
     }
     const filteredExpenses = expenses.filter((expense: Expense) => expense.id != expenseId);
     this.setExpenses(filteredExpenses);
-    this.updateBudgets(filteredExpenses, expense.budgetCategory.id);
+    this.updateBudgets(filteredExpenses, expense.categorySummary.id);
   }
 
   deleteExpenseByBudgetId(budgetId: number) {
     const expenses = this.getExpenses();
-    const filteredExpenses = expenses.filter((expense: Expense) => expense.budgetCategory.id != budgetId);
+    const filteredExpenses = expenses.filter((expense: Expense) => expense.categorySummary.id != budgetId);
     this.setExpenses(filteredExpenses);
   }
 

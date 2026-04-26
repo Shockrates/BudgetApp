@@ -49,10 +49,10 @@ export class BudgetService {
   addBudget(budget: BudgetCreate): Observable<BudgetResponse> {
     return this.http.post<BudgetResponse>(`${this.BUDGET_URL}`, budget).pipe(
       tap(res => {
-        console.log("CREATING BUDGET...",res.data);
+        console.log("CREATING BUDGET...", res.data);
         const currentBudgets = this.budgetSubject.getValue();
         const newBudget = res.data
-        
+
 
         this.setBudgets([...currentBudgets, newBudget]);
       }),
@@ -168,7 +168,7 @@ export class BudgetService {
       return {
         color: item.color,
         id: item.id,
-        name: item.name
+        categoryName: item.name
       } as BudgetCategory;
     });
     this.setBudgetCategories(budgetCategories);

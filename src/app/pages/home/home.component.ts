@@ -19,6 +19,8 @@ import { User } from '../../interfaces/models/user.interface';
 import { HouseholdService } from '../../services/household.service';
 import { Household } from '../../interfaces/models/household.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { formatDate } from '../../shared/helper/date.utils';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -45,13 +47,41 @@ export class HomeComponent implements OnInit {
   budgetCards: BudgetCardConfig[] = [];
   expenseTableData: ExpenseTableDataConfig[] = [];
 
+  //NEW EXPENSES CODE
+
+  expenses$ = this.expenseService.expenses$;
+  //loading$ = this.expenseService.loading$;
+  //error$ = this.expenseService.error$;
+
+  //NEW EXPENSES CODE
+
   ngOnInit(): void {
+
+
 
     this.user = this.authService.getCurrentUser();
     this.activeHousehold = this.householdService.getActiveHousehold()
     this.budgetCategories = this.budgetService.getBudgetCategories();
     //this.budgets = this.budgetService.getBudgets();
     //this.buildBudgetCards(this.budgets);
+
+    //NEW EXPENSES CODE
+    if (!this.activeHousehold) {
+      console.warn('No active household selected');
+      return;
+    }
+    const today = new Date();
+    const lastMonth = new Date();
+    lastMonth.setMonth(today.getMonth() - 1);
+
+    this.expenseService.loadExpenses({
+      householdId: this.activeHousehold.id, // replace later with real source
+      startDate: formatDate(lastMonth),
+      endDate: formatDate(today),
+      page: 0,
+      size: 20
+    });
+    //NEW EXPENSES CODE
 
 
     this.budgetService.getBudgetCategoryData().subscribe({
@@ -105,10 +135,10 @@ export class HomeComponent implements OnInit {
     const category = this.budgetService.getBudgetCategoryById(this.expenseForm.value.budgetCategoryId)
     const expense: Expense = {
       id: Math.floor(Math.random() * 1000000),
-      name: this.expenseForm.value.name,
-      budgetCategory: category,
-      amount: parseFloat(this.expenseForm.value.amount),
-      date: new Date()
+      expenseDescription: this.expenseForm.value.name,
+      categorySummary: category,
+      expenseAmount: parseFloat(this.expenseForm.value.amount),
+      expenseDate: new Date()
     }
     this.expenseService.addExpense(expense);
     this.expenseForm.reset();
