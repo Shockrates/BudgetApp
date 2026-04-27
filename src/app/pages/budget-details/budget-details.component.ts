@@ -12,6 +12,7 @@ import { Expense } from '../../interfaces/models/expense.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { ExpenseTableComponent } from '../../components/expense-table/expense-table.component';
 import { UiService } from '../../services/ui.service';
+import { Budget } from '../../interfaces/models/budget.interface';
 
 
 @Component({
@@ -40,23 +41,25 @@ export class BudgetDetailsComponent implements OnInit {
   })
 
   ngOnInit(): void {
-
-    this.activatedRoute.params.pipe(
-      map((params: Params) => params['id']),
-      tap((id: number) => {
-        this.budgetId = id;
-        this.initializeData()
-      }),
-      switchMap(() => this.expenseService.getExpenseData().pipe(
-        startWith(null)
-      )),
-      map(() => {
-        const expenses = this.expenseService.getExpensesByBudgetId(this.budgetId);
-        return this.expenseService.buildExpenseTable(expenses);
-      })
-    ).subscribe((tableData: ExpenseTableDataConfig[]) => {
-      this.expenseTableData = tableData;
-    });
+this.initializeData()
+    // this.activatedRoute.params.pipe(
+    //   map((params: Params) => params['id']),
+    //   tap((id: number) => {
+    //     this.budgetId = id;
+    //     this.initializeData()
+    //   }),
+    //   switchMap(() => this.expenseService.getExpenseData().pipe(
+    //     startWith(null)
+    //   )),
+    //   map(() => {
+    //     const expenses = this.expenseService.getExpensesByBudgetId(this.budgetId);
+        
+        
+    //     return this.expenseService.buildExpenseTable(expenses);
+    //   })
+    // ).subscribe((tableData: ExpenseTableDataConfig[]) => {
+    //   this.expenseTableData = tableData;
+    // });
 
 
   }
@@ -80,8 +83,8 @@ export class BudgetDetailsComponent implements OnInit {
 
   initializeData() {
     //const budget = this.budgetService.getBudgetById(this.budgetId);
-    const budget = this.route.snapshot.data['budget'];
-
+    const budget = this.route.snapshot.data['budget'] as Budget;
+    console.log(budget);
     this.budgetCard = {
       name: budget.name,
       budget: budget.budgetLimit,
@@ -91,6 +94,7 @@ export class BudgetDetailsComponent implements OnInit {
         this.deleteBudget()
       }
     }
+    this.expenseTableData = this.expenseService.buildExpenseTable(budget.expenses);
   }
 
   deleteBudget() {

@@ -75,7 +75,7 @@ export class HomeComponent implements OnInit {
     lastMonth.setMonth(today.getMonth() - 1);
 
     this.expenseService.loadExpenses({
-      householdId: this.activeHousehold.id, // replace later with real source
+      householdId: this.activeHousehold.id, 
       startDate: formatDate(lastMonth),
       endDate: formatDate(today),
       page: 0,
@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
     //NEW EXPENSES CODE
 
 
-    this.budgetService.getBudgetCategoryData().subscribe({
+    this.budgetService.budgetCategories$.subscribe({
       next: (res: BudgetCategory[]) => {
         this.budgetCategories = res;
 
