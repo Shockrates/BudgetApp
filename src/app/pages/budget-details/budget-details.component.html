@@ -5,7 +5,14 @@
     </h2>
 
     <div class="flex w-full gap-x-8 justify-center">
-        <app-budget-card [isDelete]="true" [config]="budgetCard" class="budget-card w-[40%]"></app-budget-card>
+        @if(!isEditMode){
+            <app-budget-card [isBudgetPage]="true" [config]="budgetCard" class="budget-card w-[40%]"></app-budget-card>
+        } @else {
+             <app-form-wrapper class="w-full md:w-1/2">
+            <app-budget-form></app-budget-form>
+            </app-form-wrapper>
+        }
+        
 
         <app-form-wrapper class="flex-1" [formGroup]="expenseForm">
             <div class="input-form flex flex-col gap-y-4">

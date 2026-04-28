@@ -12,12 +12,8 @@ import { CommonModule } from '@angular/common';
 })
 export class BudgetCardComponent implements OnInit, OnChanges {
 
-
-
-
-
   @Input() config!: BudgetCardConfig;
-  @Input() isDelete: boolean = false;
+  @Input() isBudgetPage: boolean = false;
 
   bgColor: string = '';
   beforeColor: string = '';
@@ -55,6 +51,10 @@ export class BudgetCardComponent implements OnInit, OnChanges {
     if (this.config.onClick) {
       this.config.onClick();
     }
+  }
+
+  toggleEditMode() {
+    throw new Error('Method not implemented.');
   }
 
 }

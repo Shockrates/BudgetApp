@@ -13,11 +13,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { ExpenseTableComponent } from '../../components/expense-table/expense-table.component';
 import { UiService } from '../../services/ui.service';
 import { Budget } from '../../interfaces/models/budget.interface';
+import { BudgetFormComponent } from "../../components/budget-form/budget-form.component";
 
 
 @Component({
   selector: 'app-budget-details',
-  imports: [ReactiveFormsModule, BudgetCardComponent, FormWrapperComponent, ExpenseTableComponent],
+  imports: [ReactiveFormsModule, BudgetCardComponent, FormWrapperComponent, ExpenseTableComponent, BudgetFormComponent],
   templateUrl: './budget-details.component.html',
   styleUrl: './budget-details.component.css'
 })
@@ -26,6 +27,7 @@ export class BudgetDetailsComponent implements OnInit {
   budgetCard!: BudgetCardConfig;
   expenseTableData: ExpenseTableDataConfig[] = [];
   budgetId!: number;
+  isEditMode: boolean = false;
 
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -33,6 +35,8 @@ export class BudgetDetailsComponent implements OnInit {
   budgetService = inject(BudgetService);
   activatedRoute = inject(ActivatedRoute);
   uiService = inject(UiService);
+
+
 
   expenseForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -101,6 +105,10 @@ this.initializeData()
     this.expenseService.deleteExpenseByBudgetId(this.budgetId);
     this.budgetService.deleteBudgetById(this.budgetId);
     this.router.navigateByUrl('');
+  }
+
+  toggleEditMode(){
+    this.isEditMode = !this.isEditMode;
   }
 
   handleDelete($event: ExpenseTableDataConfig) {

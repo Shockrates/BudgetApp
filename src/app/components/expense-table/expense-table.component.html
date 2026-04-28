@@ -14,7 +14,7 @@
             <tr class="row-data amber-opacity">
                 <td class="table-data">{{expense.name}}</td>
                 <td class="table-data">{{expense.amount}}</td>
-                <td class="table-data">{{expense.date | date:"short"}}</td>
+                <td class="table-data">{{expense.date | date:"dd-MM-yyyy"}}</td>
                 <td class="table-data">
                     <div class="btn w-fit {{uiService.generateTailwindClass(expense.color, 'bg')}}
                         rounded-3xl text-white border-none">
