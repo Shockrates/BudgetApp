@@ -6,10 +6,10 @@
 
     <div class="flex w-full gap-x-8 justify-center">
         @if(!isEditMode){
-            <app-budget-card [isBudgetPage]="true" [config]="budgetCard" class="budget-card w-[40%]"></app-budget-card>
+            <app-budget-card [isBudgetPage]="true" [config]="budgetCard" (editBudget)="toggleEditMode()" class="budget-card w-[40%]"></app-budget-card>
         } @else {
              <app-form-wrapper class="w-full md:w-1/2">
-            <app-budget-form></app-budget-form>
+            <app-budget-form [config]="budgetCard"></app-budget-form>
             </app-form-wrapper>
         }
         

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { BudgetCardConfig } from '../../interfaces/ui-config/budget-card-config.interface';
 import { Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
@@ -14,6 +14,7 @@ export class BudgetCardComponent implements OnInit, OnChanges {
 
   @Input() config!: BudgetCardConfig;
   @Input() isBudgetPage: boolean = false;
+  @Output() editBudget: EventEmitter<Boolean> = new EventEmitter();
 
   bgColor: string = '';
   beforeColor: string = '';
@@ -54,7 +55,7 @@ export class BudgetCardComponent implements OnInit, OnChanges {
   }
 
   toggleEditMode() {
-    throw new Error('Method not implemented.');
+    this.editBudget.emit(true);
   }
 
 }
