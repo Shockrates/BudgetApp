@@ -1,0 +1,315 @@
+{
+    "message": "List of Expenses between null and null",
+    "data": {
+        "content": [
+            {
+                "expenseId": 13,
+                "expenseAmount": 120.50,
+                "expenseDate": "2026-04-02",
+                "expenseDescription": "Groceries weekly shop",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 14,
+                "expenseAmount": 98.20,
+                "expenseDate": "2026-04-05",
+                "expenseDescription": "Supermarket food supplies",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 49,
+                    "userName": "AsdasdfUSer"
+                }
+            },
+            {
+                "expenseId": 15,
+                "expenseAmount": 110.00,
+                "expenseDate": "2026-04-07",
+                "expenseDescription": "Fresh vegetables and fruits",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 45,
+                    "userName": "Tester ADMIN False Eddited 3"
+                }
+            },
+            {
+                "expenseId": 16,
+                "expenseAmount": 75.30,
+                "expenseDate": "2026-04-10",
+                "expenseDescription": "Bakery and dairy items",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 17,
+                "expenseAmount": 132.90,
+                "expenseDate": "2026-04-12",
+                "expenseDescription": "Monthly grocery run",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 49,
+                    "userName": "AsdasdfUSer"
+                }
+            },
+            {
+                "expenseId": 18,
+                "expenseAmount": 88.10,
+                "expenseDate": "2026-04-14",
+                "expenseDescription": "Snacks and beverages",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 45,
+                    "userName": "Tester ADMIN False Eddited 3"
+                }
+            },
+            {
+                "expenseId": 19,
+                "expenseAmount": 101.40,
+                "expenseDate": "2026-04-15",
+                "expenseDescription": "Household food stock",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 20,
+                "expenseAmount": 95.00,
+                "expenseDate": "2026-04-16",
+                "expenseDescription": "Organic groceries",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 49,
+                    "userName": "AsdasdfUSer"
+                }
+            },
+            {
+                "expenseId": 21,
+                "expenseAmount": 140.25,
+                "expenseDate": "2026-04-17",
+                "expenseDescription": "Weekend supermarket shopping",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 45,
+                    "userName": "Tester ADMIN False Eddited 3"
+                }
+            },
+            {
+                "expenseId": 22,
+                "expenseAmount": 60.00,
+                "expenseDate": "2026-04-03",
+                "expenseDescription": "Breakfast items",
+                "categorySummary": {
+                    "categoryId": 1,
+                    "categoryName": "FOOD",
+                    "color": "red"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 25,
+                "expenseAmount": 800.00,
+                "expenseDate": "2026-04-01",
+                "expenseDescription": "Monthly rent payment April",
+                "categorySummary": {
+                    "categoryId": 2,
+                    "categoryName": "RENT",
+                    "color": "blue"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 28,
+                "expenseAmount": 800.00,
+                "expenseDate": "2026-04-01",
+                "expenseDescription": "Shared household rent",
+                "categorySummary": {
+                    "categoryId": 2,
+                    "categoryName": "RENT",
+                    "color": "blue"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 29,
+                "expenseAmount": 45.20,
+                "expenseDate": "2026-04-06",
+                "expenseDescription": "Cleaning supplies",
+                "categorySummary": {
+                    "categoryId": 3,
+                    "categoryName": "SUPPLIES",
+                    "color": "teal"
+                },
+                "userSummary": {
+                    "userId": 49,
+                    "userName": "AsdasdfUSer"
+                }
+            },
+            {
+                "expenseId": 30,
+                "expenseAmount": 32.10,
+                "expenseDate": "2026-04-08",
+                "expenseDescription": "Kitchen supplies restock",
+                "categorySummary": {
+                    "categoryId": 3,
+                    "categoryName": "SUPPLIES",
+                    "color": "teal"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 31,
+                "expenseAmount": 27.90,
+                "expenseDate": "2026-04-09",
+                "expenseDescription": "Bathroom essentials",
+                "categorySummary": {
+                    "categoryId": 3,
+                    "categoryName": "SUPPLIES",
+                    "color": "teal"
+                },
+                "userSummary": {
+                    "userId": 45,
+                    "userName": "Tester ADMIN False Eddited 3"
+                }
+            },
+            {
+                "expenseId": 32,
+                "expenseAmount": 50.00,
+                "expenseDate": "2026-04-11",
+                "expenseDescription": "Laundry detergent and softener",
+                "categorySummary": {
+                    "categoryId": 3,
+                    "categoryName": "SUPPLIES",
+                    "color": "teal"
+                },
+                "userSummary": {
+                    "userId": 49,
+                    "userName": "AsdasdfUSer"
+                }
+            },
+            {
+                "expenseId": 33,
+                "expenseAmount": 39.99,
+                "expenseDate": "2026-04-13",
+                "expenseDescription": "Paper towels and tissues",
+                "categorySummary": {
+                    "categoryId": 3,
+                    "categoryName": "SUPPLIES",
+                    "color": "teal"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            },
+            {
+                "expenseId": 37,
+                "expenseAmount": 120.00,
+                "expenseDate": "2026-04-04",
+                "expenseDescription": "School tuition fee installment",
+                "categorySummary": {
+                    "categoryId": 4,
+                    "categoryName": "EDUCATION",
+                    "color": "purple"
+                },
+                "userSummary": {
+                    "userId": 45,
+                    "userName": "Tester ADMIN False Eddited 3"
+                }
+            },
+            {
+                "expenseId": 38,
+                "expenseAmount": 35.00,
+                "expenseDate": "2026-04-06",
+                "expenseDescription": "Books and stationery",
+                "categorySummary": {
+                    "categoryId": 4,
+                    "categoryName": "EDUCATION",
+                    "color": "purple"
+                },
+                "userSummary": {
+                    "userId": 49,
+                    "userName": "AsdasdfUSer"
+                }
+            },
+            {
+                "expenseId": 39,
+                "expenseAmount": 55.50,
+                "expenseDate": "2026-04-08",
+                "expenseDescription": "Online course subscription",
+                "categorySummary": {
+                    "categoryId": 4,
+                    "categoryName": "EDUCATION",
+                    "color": "purple"
+                },
+                "userSummary": {
+                    "userId": 53,
+                    "userName": "Sokratis"
+                }
+            }
+        ],
+        "meta": {
+            "pageNumber": 0,
+            "pageSize": 50,
+            "totalElements": 20,
+            "totalPages": 1,
+            "numberOfElements": 20,
+            "last": true
+        }
+    }
+}

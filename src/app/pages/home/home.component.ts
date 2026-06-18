@@ -24,7 +24,7 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [FormWrapperComponent, ReactiveFormsModule, BudgetCardComponent, ExpenseTableComponent, BudgetFormComponent],
+  imports: [FormWrapperComponent, ReactiveFormsModule, BudgetCardComponent, ExpenseTableComponent, BudgetFormComponent, AsyncPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -60,7 +60,11 @@ export class HomeComponent implements OnInit {
 
 
     this.user = this.authService.getCurrentUser();
+    console.log('Current user:', this.user);
+
     this.activeHousehold = this.householdService.getActiveHousehold()
+    console.log('Active household:', this.activeHousehold);
+
     this.budgetCategories = this.budgetService.getBudgetCategories();
     //this.budgets = this.budgetService.getBudgets();
     //this.buildBudgetCards(this.budgets);
@@ -70,17 +74,20 @@ export class HomeComponent implements OnInit {
       console.warn('No active household selected');
       return;
     }
+
     const today = new Date();
     const lastMonth = new Date();
-    lastMonth.setMonth(today.getMonth() - 1);
+    lastMonth.setMonth(today.getMonth() - 3);
 
-    this.expenseService.loadExpenses({
-      householdId: this.activeHousehold.id, // replace later with real source
+    const loadParams = {
+      householdId: this.activeHousehold.id,
       startDate: formatDate(lastMonth),
       endDate: formatDate(today),
       page: 0,
       size: 20
-    });
+    };
+    console.log('Loading expenses with params:', loadParams);
+    this.expenseService.loadExpenses(loadParams);
     //NEW EXPENSES CODE
 
 
@@ -112,10 +119,11 @@ export class HomeComponent implements OnInit {
     this.expenseTableData = this.expenseService.buildExpenseTable(expenses);
     this.expenseService.getExpenseData().subscribe({
       next: (res: Expense[]) => {
+        console.log('Expenses subscription received:', res);
         this.expenseTableData = this.expenseService.buildExpenseTable(res);
       },
       error: (error: any) => {
-        console.error(error)
+        console.error('Error in expenses subscription:', error)
       }
     })
 

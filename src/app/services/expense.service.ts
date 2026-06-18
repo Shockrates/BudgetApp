@@ -6,7 +6,7 @@ import { ExpenseTableDataConfig } from '../interfaces/ui-config/expense-table-co
 import { HttpClient } from '@angular/common/http';
 import { ExpensePageConfig } from '../interfaces/ui-config/expense-page-config.interface';
 import { PaginationMetaConfig } from '../interfaces/ui-config/pagination-meta-config.interface';
-import { ExpenseResponse } from '../interfaces/api/expenseResponse.interface';
+import { ExpenseResponse, ExpenseDTO } from '../interfaces/api/expenseResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -43,16 +43,32 @@ export class ExpenseService {
 
     // Return cached result if same query
     if (this.lastKey === key && this.lastValue) {
-      this.expenseSubject.next(this.lastValue.data.content);
+      // Map cached DTO to Expense model
+      const mappedExpenses = this.mapDtoToExpense(this.lastValue.data.content);
+      this.expenseSubject.next(mappedExpenses);
       this.paginationSubject.next(this.lastValue.data.meta);
       return;
     }
 
     //this.loadingSubject.next(true);
 
-    this.http.get<ExpenseResponse>(`${this.EXPENSE_URL}/household/` + params.householdId, { params }).pipe(
+    console.log('Fetching expenses from API with params:', params);
+
+    // Build query params without householdId (already in URL path)
+    const queryParams = {
+      startDate: params.startDate,
+      endDate: params.endDate,
+      page: params.page,
+      size: params.size
+    };
+
+    this.http.get<ExpenseResponse>(`${this.EXPENSE_URL}/household/${params.householdId}`, { params: queryParams }).pipe(
       tap(res => {
-        this.expenseSubject.next(res.data.content);
+        console.log('API response received:', res);
+        // Map API DTO to Expense model
+        const mappedExpenses = this.mapDtoToExpense(res.data.content);
+        console.log('Mapped expenses:', mappedExpenses);
+        this.expenseSubject.next(mappedExpenses);
         this.paginationSubject.next(res.data.meta);
 
         // store last query only
@@ -145,6 +161,21 @@ export class ExpenseService {
   // HELPER METHODS
   private buildKey(params: any): string {
     return JSON.stringify(params);
+  }
+
+  // Maps API DTO to domain Expense model
+  private mapDtoToExpense(dtos: ExpenseDTO[]): Expense[] {
+    return dtos.map(dto => ({
+      id: dto.expenseId,
+      expenseDescription: dto.expenseDescription,
+      expenseAmount: dto.expenseAmount,
+      expenseDate: new Date(dto.expenseDate),
+      categorySummary: {
+        id: dto.categorySummary.categoryId, // Map categoryId → id
+        categoryName: dto.categorySummary.categoryName,
+        color: dto.categorySummary.color
+      }
+    }));
   }
 
 }
