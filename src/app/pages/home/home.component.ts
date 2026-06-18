@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit {
     //NEW EXPENSES CODE
 
 
-    this.budgetService.getBudgetCategoryData().subscribe({
+    this.budgetService.budgetCategories$.subscribe({
       next: (res: BudgetCategory[]) => {
         this.budgetCategories = res;
 

@@ -12,11 +12,13 @@ import { Expense } from '../../interfaces/models/expense.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { ExpenseTableComponent } from '../../components/expense-table/expense-table.component';
 import { UiService } from '../../services/ui.service';
+import { Budget } from '../../interfaces/models/budget.interface';
+import { BudgetFormComponent } from "../../components/budget-form/budget-form.component";
 
 
 @Component({
   selector: 'app-budget-details',
-  imports: [ReactiveFormsModule, BudgetCardComponent, FormWrapperComponent, ExpenseTableComponent],
+  imports: [ReactiveFormsModule, BudgetCardComponent, FormWrapperComponent, ExpenseTableComponent, BudgetFormComponent],
   templateUrl: './budget-details.component.html',
   styleUrl: './budget-details.component.css'
 })
@@ -25,6 +27,7 @@ export class BudgetDetailsComponent implements OnInit {
   budgetCard!: BudgetCardConfig;
   expenseTableData: ExpenseTableDataConfig[] = [];
   budgetId!: number;
+  isEditMode: boolean = false;
 
   router = inject(Router);
   route = inject(ActivatedRoute);
@@ -33,6 +36,8 @@ export class BudgetDetailsComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   uiService = inject(UiService);
 
+
+
   expenseForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
     amount: new FormControl(null, [Validators.required]),
@@ -40,23 +45,25 @@ export class BudgetDetailsComponent implements OnInit {
   })
 
   ngOnInit(): void {
-
-    this.activatedRoute.params.pipe(
-      map((params: Params) => params['id']),
-      tap((id: number) => {
-        this.budgetId = id;
-        this.initializeData()
-      }),
-      switchMap(() => this.expenseService.getExpenseData().pipe(
-        startWith(null)
-      )),
-      map(() => {
-        const expenses = this.expenseService.getExpensesByBudgetId(this.budgetId);
-        return this.expenseService.buildExpenseTable(expenses);
-      })
-    ).subscribe((tableData: ExpenseTableDataConfig[]) => {
-      this.expenseTableData = tableData;
-    });
+this.initializeData()
+    // this.activatedRoute.params.pipe(
+    //   map((params: Params) => params['id']),
+    //   tap((id: number) => {
+    //     this.budgetId = id;
+    //     this.initializeData()
+    //   }),
+    //   switchMap(() => this.expenseService.getExpenseData().pipe(
+    //     startWith(null)
+    //   )),
+    //   map(() => {
+    //     const expenses = this.expenseService.getExpensesByBudgetId(this.budgetId);
+        
+        
+    //     return this.expenseService.buildExpenseTable(expenses);
+    //   })
+    // ).subscribe((tableData: ExpenseTableDataConfig[]) => {
+    //   this.expenseTableData = tableData;
+    // });
 
 
   }
@@ -80,8 +87,8 @@ export class BudgetDetailsComponent implements OnInit {
 
   initializeData() {
     //const budget = this.budgetService.getBudgetById(this.budgetId);
-    const budget = this.route.snapshot.data['budget'];
-
+    const budget = this.route.snapshot.data['budget'] as Budget;
+    console.log(budget);
     this.budgetCard = {
       name: budget.name,
       budget: budget.budgetLimit,
@@ -91,12 +98,17 @@ export class BudgetDetailsComponent implements OnInit {
         this.deleteBudget()
       }
     }
+    this.expenseTableData = this.expenseService.buildExpenseTable(budget.expenses);
   }
 
   deleteBudget() {
     this.expenseService.deleteExpenseByBudgetId(this.budgetId);
     this.budgetService.deleteBudgetById(this.budgetId);
     this.router.navigateByUrl('');
+  }
+
+  toggleEditMode(){
+    this.isEditMode = !this.isEditMode;
   }
 
   handleDelete($event: ExpenseTableDataConfig) {

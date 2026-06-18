@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, Observable, of, BehaviorSubject, tap, EMPTY, distinctUntilChanged } from 'rxjs';
+import { catchError, map, Observable, of, BehaviorSubject, tap, EMPTY, distinctUntilChanged, throwError } from 'rxjs';
 import { Budget } from '../interfaces/models/budget.interface';
 import { BudgetCategory } from '../interfaces/models/budget-category.interface';
 import { HttpClient } from '@angular/common/http';
@@ -24,7 +24,7 @@ export class BudgetService {
   private budgetSubject: BehaviorSubject<Budget[]> = new BehaviorSubject<Budget[]>([]);
   public budgets$ = this.budgetSubject.asObservable();
   private budgetCategorySubject: BehaviorSubject<BudgetCategory[]> = new BehaviorSubject<BudgetCategory[]>([]);
-  public budgetCategoriess$ = this.budgetCategorySubject.asObservable();
+  public budgetCategories$ = this.budgetCategorySubject.asObservable();
 
   private budgetsLoaded = false;
 
@@ -92,6 +92,34 @@ export class BudgetService {
         return EMPTY;
       })
     ).subscribe();
+  }
+
+  loadBudgetById(params: {
+      budgetId: number;
+      startDate: string;
+      endDate: string;
+      page?: number;
+      size?: number;
+    }):Observable<Budget>{
+
+    const { budgetId, ...queryParams } = params;
+
+    const url = `${this.BUDGET_URL}/${budgetId}/expenses`;
+    return this.http.get<BudgetResponse>(url,{params:queryParams})
+    .pipe(
+      map(res => {
+        if (!res?.data) {
+        throw new Error('Invalid budget response');
+      }
+      return res.data; // ✅ guaranteed Budget
+      }),
+      catchError(err => {
+        console.error('Failed to load budget details', err);
+      return throwError(() => err);
+      })
+    );
+
+
   }
 
   /**
@@ -181,22 +209,6 @@ export class BudgetService {
   private setBudgetCategories(budgetCategories: BudgetCategory[]) {
     localStorage.setItem(this.BUDGET_CATEGORIES, JSON.stringify(budgetCategories));
     this.budgetCategorySubject.next(budgetCategories);
-  }
-
-  /**
-   * Observable stream of budget data
-   * Use in components with async pipe to avoid manual subscriptions
-   */
-  getBudgetData(): Observable<Budget[]> {
-    return this.budgetSubject.asObservable();
-  }
-
-  /**
-   * Observable stream of budget category data
-   * Use in components with async pipe to avoid manual subscriptions
-   */
-  getBudgetCategoryData(): Observable<BudgetCategory[]> {
-    return this.budgetCategorySubject.asObservable();
   }
 
   /**
